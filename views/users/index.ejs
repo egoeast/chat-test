@@ -1,0 +1,8 @@
+<% layout('../layout/main') -%>
+
+    <h1>Hello World!!!</h1>
+    <p>Welcome to <%= title %></p>
+    <% users.forEach((user) => { %>
+        <a href= "/users/view?name=<%- user.username %>"><%- user.username %></a>
+        </br>
+        <% }) %>
