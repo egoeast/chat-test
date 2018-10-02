@@ -36,7 +36,7 @@ schema.virtual('password')
     .get(function () {
         return this._plainPassword;
     });
-schema.methods.checkPassword = function(){
+schema.methods.checkPassword = function(password){
     return this.encryptPassword(password) === this.hashedPassword;
 };
 

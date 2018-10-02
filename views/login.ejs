@@ -44,8 +44,9 @@
           window.location.href = "/chat";
         },
         403: function(jqXHR) {
-          var error = JSON.parse(jqXHR.responseText);
-          $('.error', form).html(error.message);
+            console.log(jqXHR);
+          //var error = JSON.parse(jqXHR.responseText);
+          $('.error', form).html("Пароль не верен");
         }
       }
     });
