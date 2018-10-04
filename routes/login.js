@@ -6,8 +6,9 @@ var async = require('async');
 
 /* GET login page. */
 router.get('/', function (req, res, next) {
-    res.render('login', {title: 'Express', user: null});
+    res.render('index', {title: 'Express', user: null});
 });
+/*
 router.post('/', function (req, res, next) {
     let userName = req.body.username;
     let pass = req.body.password;
@@ -32,7 +33,7 @@ router.post('/', function (req, res, next) {
         },
 
     ]);
-/*
+/!*
     User.findOne({username: userName}, (err, user) => {
         if(err) return next(err);
         if (user) {
@@ -45,9 +46,10 @@ router.post('/', function (req, res, next) {
             let newUser = new User(userName, pass);
             user.save();
         }
-    })*/
+    })*!/
 
 });
+*/
 
 
 module.exports = router;

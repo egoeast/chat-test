@@ -12,6 +12,7 @@ var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var chatRouter = require('./routes/chat');
 var testRouter = require('./routes/test');
+var apiRouter = require('./routes/api');
 
 var config = require('./config');
 var MongoStore = require('connect-mongo')(session);
@@ -43,6 +44,7 @@ app.use('/users', usersRouter);
 app.use('/login', loginRouter)
 app.use('/chat', chatRouter)
 app.use('/test', testRouter)
+app.use('/api', apiRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
