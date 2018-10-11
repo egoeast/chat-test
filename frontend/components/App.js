@@ -59,7 +59,9 @@ class App extends Component {
                     {/*<PrivateRoute auth={this.state.isAuthenticated} path="/chat" redirectTo="/login" component={Chat} />*/}
                     <Route exact path="/chat" render={() => (
                         this.state.isAuthenticated ? (
-                            <Chat/>
+                            <Chat
+                                username={this.state.username}
+                            />
                         ) : (
                             <Redirect to="/login"/>
                         )

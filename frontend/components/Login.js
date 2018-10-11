@@ -13,7 +13,7 @@ class Login extends Component {
         this.state = {
             // isOpen: this.props.defaultOpen,
             clickCount: 0,
-            message: "Hi",
+            message: "",
             username: 'name',
             password: 'pass'
         };
@@ -24,14 +24,7 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        let data = "Hi111";
-        axios.get('/test/api')
-            .then(
-                response => data
-            )
-            .catch(function (error) {
-                console.log(error);
-            });
+
     }
 
     handleChangeLogin(event) {
@@ -61,6 +54,7 @@ class Login extends Component {
                                    type="password" className="form-control" id="pwd"/>
                         </div>
                         <a onClick={this.sendRequest.bind(this)} className={'btn btn-primary'}>Войти</a>
+                        <p className={'message'}>{this.state.message}</p>
                     </form>
                 </div>
             </div>
@@ -77,13 +71,15 @@ class Login extends Component {
             .then(
                 (response) => {
                     data = response.data;
+                    console.log(data.status);
                     if (data.status === 200) {
                         this.props.auth(true, data.username);
-                    }
-                    /*this.setState({
-                        message: response.data.text
+                    } else {
+                        this.setState({
+                            message: data.text
 
-                    });*/
+                        });
+                    }
                 }
             )
             .catch((error) => {

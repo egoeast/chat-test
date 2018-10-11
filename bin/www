@@ -8,7 +8,9 @@ var app = require('../app');
 var debug = require('debug')('chat:server');
 var http = require('http');
 var config = require('config');
-var io = require('socket.io')(http);
+var Message = require('../models/message').Message;
+var crypto = require("crypto");
+
 
 /**
  * Get port from environment and store in Express.
@@ -27,15 +29,44 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-io.on('connection', function(socket){
-    console.log('a user connected');
+/*
+io.sockets.on('connection', function(socket){
+    socket.emit('news', {hello: "world"});
+    socket.on('my other event', function (data) {
+      console.log(data);
+    })
 });
+*/
+var io = require('socket.io')(server);
 
-
-server.listen(port);
+server.listen(port, () => {
+  console.log('listening')
+});
 server.on('error', onError);
 server.on('listening', onListening);
 
+io.on('connection', function(socket){
+
+    console.log('a user connected with id: ' + socket.id);
+    socket.on('storeUserData', (info) => {
+        let id = crypto.randomBytes(20).toString('hex');
+        io.emit('chat message', {_id: id, username: 'system', text: 'A user '+ info.username +' connected'});
+    });
+
+    socket.on('disconnect', function(){
+        let id = crypto.randomBytes(20).toString('hex');
+        io.emit('chat message', {_id: id, username: 'system', text: 'A user disconnected'});
+        console.log('user disconnected');
+    });
+
+    socket.on('chat message', function(msg){
+        let message = new Message({username: msg.username, text: msg.text});
+        message.save();
+        console.log('message: ' + message);
+        io.emit('chat message', message);
+    });
+
+});
 /**
  * Normalize a port into a number, string, or false.
  */
