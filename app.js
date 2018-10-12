@@ -15,7 +15,7 @@ var chatRouter = require('./routes/chat');
 var testRouter = require('./routes/test');
 var apiRouter = require('./routes/api');
 
-var config = require('./config');
+var config = require('./config/index');
 var MongoStore = require('connect-mongo')(session);
 var mongoose = require('./libs/mongoose');
 
