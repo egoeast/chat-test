@@ -37,7 +37,7 @@ app.use(session({
     key: config.get('session:key'),
     cookie: config.get('session:cookie'),
 }));
-app.use(require('middleware/loadUser'));
+app.use(require('./middleware/loadUser'));
 
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
