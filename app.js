@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var lessMiddleware = require('less-middleware');
 var logger = require('morgan');
-var HttpError = require('error').HttpError;
+var HttpError = require('./error/index').HttpError;
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
