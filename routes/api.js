@@ -4,6 +4,10 @@ var User = require('../models/user').User;
 var HttpError = require('../error/index').HttpError;
 var async = require('async');
 
+router.get('/', function (req, res, next) {
+    res.send({user: req.user});
+});
+
 router.post('/login', function (req, res, next) {
     let userName = req.body.username;
     let pass = req.body.password;
@@ -53,5 +57,9 @@ router.post('/login', function (req, res, next) {
 
 });
 
+router.post('/logout', function (req, res, next) {
+   req.session.destroy();
+   res.send({status: 200, text: 'Logged Out', username: 'Guest'});
+});
 
 module.exports = router;

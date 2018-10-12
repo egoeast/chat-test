@@ -10,6 +10,7 @@ var HttpError = require('error').HttpError;
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
+var logoutRouter = require('./routes/logout');
 var chatRouter = require('./routes/chat');
 var testRouter = require('./routes/test');
 var apiRouter = require('./routes/api');
@@ -36,15 +37,18 @@ app.use(session({
     key: config.get('session:key'),
     cookie: config.get('session:cookie'),
 }));
+app.use(require('middleware/loadUser'));
+
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/login', loginRouter)
-app.use('/chat', chatRouter)
-app.use('/test', testRouter)
-app.use('/api', apiRouter)
+app.use('/login', loginRouter);
+//app.use('/logout', logoutRouter);
+app.use('/chat', chatRouter);
+app.use('/test', testRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

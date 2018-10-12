@@ -21,8 +21,28 @@ class App extends Component {
         };
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    /*componentDidUpdate(prevProps, prevState) {
         console.log('updated');
+    }*/
+
+    componentDidMount() {
+        axios.get('/api/')
+            .then(
+                (response) => {
+                    let user = response.data.user;
+                    if (user) {
+                        this.setAuth(true, user.username);
+                    } else {
+                        this.setState({
+                            message: 'Error'
+
+                        });
+                    }
+                }
+            )
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     render() {
@@ -80,10 +100,30 @@ class App extends Component {
     }
 
     logOut() {
-        this.setState({
-            isAuthenticated: false,
-            username: 'Guest'
-        })
+        axios.post('/api/logout')
+            .then(
+                (response) => {
+                    let data = response.data;
+                    console.log(response.data);
+                    if (data.status === 200) {
+                        //this.props.auth(true, data.username);
+                        this.setState({
+                            isAuthenticated: false,
+                            username: 'Guest',
+                            message: data.text
+                        })
+                    } else {
+                        this.setState({
+                            message: data.text
+
+                        });
+                    }
+                }
+            )
+            .catch((error) => {
+                console.log(error);
+            });
+
     }
 
 }

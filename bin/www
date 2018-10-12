@@ -9,7 +9,9 @@ var debug = require('debug')('chat:server');
 var http = require('http');
 var config = require('config');
 var Message = require('../models/message').Message;
+var Connection = require('../models/connection').Connection;
 var crypto = require("crypto");
+var HttpError = require('../error/index').HttpError;
 
 
 /**
@@ -49,14 +51,22 @@ io.on('connection', function(socket){
 
     console.log('a user connected with id: ' + socket.id);
     socket.on('storeUserData', (info) => {
+        Connection.create({username: info.username, socketId: socket.id}, (err) => {
+            if (err) return err;
+        });
         let id = crypto.randomBytes(20).toString('hex');
         io.emit('chat message', {_id: id, username: 'system', text: 'A user '+ info.username +' connected'});
+
     });
 
-    socket.on('disconnect', function(){
-        let id = crypto.randomBytes(20).toString('hex');
-        io.emit('chat message', {_id: id, username: 'system', text: 'A user disconnected'});
-        console.log('user disconnected');
+    socket.on('disconnect', () => {
+        Connection.findOne({socketId: socket.id}, (err, conn) => {
+            let id = crypto.randomBytes(20).toString('hex');
+            io.emit('chat message', {_id: id, username: 'system', text: 'A user ' + conn.username + ' disconnected'});
+            conn.remove();
+        });
+
+        console.log('user disconnected with id ' + socket.id);
     });
 
     socket.on('chat message', function(msg){

@@ -6,6 +6,7 @@ var async = require('async');
 
 /* GET login page. */
 router.get('/', function (req, res, next) {
+    //res.redirect('/');
     res.render('index', {title: 'Express', user: null});
 });
 /*
