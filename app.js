@@ -15,7 +15,7 @@ var chatRouter = require('./routes/chat');
 var testRouter = require('./routes/test');
 var apiRouter = require('./routes/api');
 
-var config = require('./config/index');
+//var config = require('./config/index');
 var MongoStore = require('connect-mongo')(session);
 var mongoose = require('./libs/mongoose');
 
@@ -32,10 +32,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({
-    secret: config.get('session:secret'),
+    //secret: config.get('session:secret'),
+    secret: "Killer is Bob",
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
-    key: config.get('session:key'),
-    cookie: config.get('session:cookie'),
+    //key: config.get('session:key'),
+    //cookie: config.get('session:cookie'),
+    key: "sid",
+    cookie: {
+        "path": "/",
+        "httpOnly": true,
+        "maxAge": null
+    },
 }));
 app.use(require('./middleware/loadUser'));
 
