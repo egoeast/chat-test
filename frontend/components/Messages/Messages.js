@@ -1,5 +1,6 @@
 import React from 'react';
 import {Component} from 'react';
+import './Messages.less';
 
 class Messages extends Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class Messages extends Component {
                     {message.text}
             </li>);
         return(
-            <div>
+            <div className={'message-container'}>
                 <ul className={'message-list'}>
                     {messageList}
                 </ul>

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Component} from 'react';
-import Messages from "./Messages";
+import Messages from "../Messages/Messages";
+import style from './Chat.less';
 
 let socket;
 
@@ -35,6 +36,12 @@ class Chat extends Component {
         });
     }
 
+    handleKeyPress(event) {
+        if (event.key == 'Enter') {
+            this.sendMessage();
+        }
+    }
+
     render() {
         return (
             <div className="container">
@@ -43,15 +50,26 @@ class Chat extends Component {
                     <Messages
                         messages = {this.state.messages}
                     />
-                    <input placeholder={'Type message...'} onChange={this.handleChangeMessage.bind(this)} />
-                    <a className={'btn btn-primary'} onClick={this.sendMessage.bind(this)}>Send</a>
+
+                    <div className="input-group">
+                        <input placeholder={'Type message...'} onChange={this.handleChangeMessage.bind(this)} className="form-control" onKeyPress={this.handleKeyPress.bind(this)} value={this.state.message}/>
+                            <div className="input-group-append">
+                                <button className="btn btn-outline-secondary" type="button" onClick={this.sendMessage.bind(this)}>Send</button>
+                            </div>
+                    </div>
                 </div>
             </div>
         )
     }
 
     sendMessage() {
-        socket.emit('chat message', {id:3, username: this.props.username, text: this.state.message});
+        if (this.state.message) {
+            socket.emit('chat message', {id: 3, username: this.props.username, text: this.state.message});
+            this.setState({
+                message: ''
+            })
+        }
+
     }
 
     reseiveMessage(message) {

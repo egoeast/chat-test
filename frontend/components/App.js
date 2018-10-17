@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import Home from './Home';
 import Login from './Login';
-import Chat from './Chat';
+import Chat from './Chat/Chat';
 import {BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
 import PrivateRoute from './PrivateRoute';
 
@@ -33,10 +33,10 @@ class App extends Component {
                     if (user) {
                         this.setAuth(true, user.username);
                     } else {
-                        this.setState({
+                        /*this.setState({
                             message: 'Error'
 
-                        });
+                        });*/
                     }
                 }
             )
