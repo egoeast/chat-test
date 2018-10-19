@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 
 //mongoose.connect(config.get('mongoose:uri'), config.get('mongoose:options'));
 
-/*
 
 mongoose.connect('mongodb://localhost/chat', {
     "server": {
@@ -12,8 +11,8 @@ mongoose.connect('mongodb://localhost/chat', {
         }
     }
 });
-*/
 
+/*
 mongoose.connect('mongodb://user:pass123@ds263571.mlab.com:63571/egoeast-chat', {
     "server": {
         "socetOptions": {
@@ -21,6 +20,7 @@ mongoose.connect('mongodb://user:pass123@ds263571.mlab.com:63571/egoeast-chat', 
         }
     }
 });
+*/
 
 
 

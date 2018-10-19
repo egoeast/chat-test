@@ -49,16 +49,17 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 io.on('connection', function(socket){
-
+    socket.broadcast.emit('user connected');
     console.log('a user connected with id: ' + socket.id);
     socket.on('storeUserData', (info) => {
         Connection.create({username: info.username, socketId: socket.id}, (err) => {
             if (err) return err;
         });
-        let id = crypto.randomBytes(20).toString('hex');
-        io.emit('chat message', {_id: id, username: 'system', text: 'A user '+ info.username +' connected'});
 
+        //let id = crypto.randomBytes(20).toString('hex');
+        //io.emit('broadcast', {_id: id, username: 'system', text: 'A user '+ info.username +' connected'});
     });
+
 
     socket.on('disconnect', () => {
         Connection.findOne({socketId: socket.id}, (err, conn) => {
