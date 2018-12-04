@@ -8,8 +8,13 @@ import Chat from './Chat/Chat';
 import {BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
 import PrivateRoute from './PrivateRoute';
 
-class App extends Component {
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
+//import User from '../components/User'
+//import Page from '../components/Page'
+import * as pageActions from '../actions/PageActions'
 
+class App extends Component {
 
     constructor(props) {
         super(props);
@@ -21,11 +26,8 @@ class App extends Component {
         };
     }
 
-    /*componentDidUpdate(prevProps, prevState) {
-        console.log('updated');
-    }*/
-
     componentDidMount() {
+        console.log(this);
         axios.get('/api/')
             .then(
                 (response) => {
@@ -35,7 +37,6 @@ class App extends Component {
                     } else {
                         /*this.setState({
                             message: 'Error'
-
                         });*/
                     }
                 }
@@ -46,10 +47,10 @@ class App extends Component {
     }
 
     render() {
-
         return (
             <Router>
                 <div>
+                    <h2>Hi, {this.props.name}</h2>
                     <ul>
                         <li>
                             <Link to="/">Home</Link>
@@ -115,7 +116,6 @@ class App extends Component {
                     } else {
                         this.setState({
                             message: data.text
-
                         });
                     }
                 }
@@ -123,9 +123,7 @@ class App extends Component {
             .catch((error) => {
                 console.log(error);
             });
-
     }
-
 }
 
 App.propTypes = {
@@ -136,4 +134,16 @@ App.propTypes = {
     greeting: 'Hi'
 };*/
 
-export default App
+function mapStateToProps(state) {
+    return {
+        name: state.user.name,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        pageActions: bindActionCreators(pageActions, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

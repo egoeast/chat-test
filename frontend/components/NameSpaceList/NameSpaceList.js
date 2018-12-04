@@ -20,16 +20,15 @@ class NameSpaceList extends Component {
     handleClick(name) {
         this.setState({
             currentNameSpace: name
-        })
-        console.log(name)
+        });
     }
 
     render () {
         const list = this.state.nameSpaces.map((name) =>
             <div>
-                <a onClick={this.handleClick.bind(name)}> {name} </a>
+                <a onClick={this.handleClick.bind(this, name)}> {name} </a>
             </div>
-        )
+        );
         return (
 
             <div>
