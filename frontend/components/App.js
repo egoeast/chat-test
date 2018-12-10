@@ -12,7 +12,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 //import User from '../components/User'
 //import Page from '../components/Page'
-import * as pageActions from '../actions/PageActions'
+import * as chatActions from '../actions/ChatActions'
 
 class App extends Component {
 
@@ -27,7 +27,6 @@ class App extends Component {
     }
 
     componentDidMount() {
-        console.log(this);
         axios.get('/api/')
             .then(
                 (response) => {
@@ -50,7 +49,7 @@ class App extends Component {
         return (
             <Router>
                 <div>
-                    <h2>Hi, {this.props.name}</h2>
+                    <h2>Hi, {this.props.name} {this.props.sername}</h2>
                     <ul>
                         <li>
                             <Link to="/">Home</Link>
@@ -65,6 +64,7 @@ class App extends Component {
                         <li>
                             <Link to="/chat">Chat</Link>
                         </li>
+
                     </ul>
                     <hr/>
                     <h1 className="display-3">{this.props.parent}</h1>
@@ -81,7 +81,7 @@ class App extends Component {
                     <Route exact path="/chat" render={() => (
                         this.state.isAuthenticated ? (
                             <Chat
-                                username={this.state.username}
+                                username={this.state.username} currentChannel={this.props.currentChannel} changeChannel={this.props.chatActions.changeChannel}
                             />
                         ) : (
                             <Redirect to="/login"/>
@@ -89,6 +89,7 @@ class App extends Component {
                     )}/>
 
                 </div>
+
             </Router>
         )
     }
@@ -137,12 +138,15 @@ App.propTypes = {
 function mapStateToProps(state) {
     return {
         name: state.user.name,
+        sername: state.user.sername,
+        currentChannel: state.chat.currentChannel,
+        //changeChannel: state.chat.changeChannel
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        pageActions: bindActionCreators(pageActions, dispatch)
+        chatActions: bindActionCreators(chatActions, dispatch)
     }
 }
 

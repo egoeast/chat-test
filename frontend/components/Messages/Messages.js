@@ -12,7 +12,6 @@ class Messages extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.messages)
     }
     render() {
         const {messages} = this.props;

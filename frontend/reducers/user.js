@@ -1,7 +1,8 @@
 import {AUTH_USER} from "../constants/User";
 
 const initialState = {
-    name: 'Anon'
+    name: 'Anon',
+    sername: 'Anonovich'
 };
 
 export default function user(state = initialState,action) {

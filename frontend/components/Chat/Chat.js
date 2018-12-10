@@ -53,17 +53,18 @@ class Chat extends Component {
     }
 
     render() {
-        const emojiModal = emojiArray.map((em, index) =>
+       /* const emojiModal = emojiArray.map((em, index) =>
             <a href={''} onClick={this.addEmoji(em)}>
-                {console.log(em)}
                 {em}
             </a>
-        );
+        );*/
+        const  emojiModal = '';
+
         return (
             <div className="container">
                 <div className={'row'}>
                 <div className={'col-md-2 jumbotron'}>
-                    <NameSpaceList/>
+                    <NameSpaceList currentChannel={this.props.currentChannel} changeChannel={this.props.changeChannel}/>
                 </div>
                 <div className={'col-md-10'}>
                     <div className="jumbotron">
@@ -97,7 +98,6 @@ class Chat extends Component {
                 message: ''
             })
         }
-
     }
 
     reseiveMessage(message) {

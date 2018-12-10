@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux'
 import page from './page'
 import user from './user'
+import chat from './chat'
 
-export default combineReducers({page, user })
+export default combineReducers({user, chat })

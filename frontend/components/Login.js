@@ -62,7 +62,6 @@ class Login extends Component {
     }
 
     sendRequest() {
-        console.log('request');
         let data = {};
         axios.post('/api/login', {
             password: this.state.password,
