@@ -1,4 +1,5 @@
-import {CHANGE_CHANNEL} from "../constants/Chat";
+import {CHANGE_CHANNEL, GET_CHANNELS} from "../constants/Chat";
+import axios from "axios";
 
 export function changeChannel(channelId) {
     return (dispatch) => {
@@ -7,4 +8,20 @@ export function changeChannel(channelId) {
             payload: channelId
         })
     }
+}
+
+export function getChannels() {
+        return (dispatch) => {
+        return axios.get('api/channels')
+            .then( (response) => {
+                dispatch({
+                    type: GET_CHANNELS,
+                    payload: response.data.channels
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
 }

@@ -3,7 +3,12 @@ import {Component} from 'react';
 import Messages from "../Messages/Messages";
 import style from './Chat.less';
 import Emoji from 'react-emoji-render';
-import NameSpaceList from '../NameSpaceList/NameSpaceList'
+import ChannelList from '../ChannelListList/ChannelList';
+import * as chatActions from "../../actions/ChatActions";
+import * as userActions from "../../actions/UserActions";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import axios from "axios/index";
 
 let socket;
 let emojiArray = [':grinning:', ':grin:', ':joy:', ':smiley:', ':smile:'];
@@ -20,14 +25,20 @@ class Chat extends Component {
     }
 
     componentDidMount() {
+
+
         socket = io();
         socket.on('connect', () => {
+            console.log(socket);
             socket.emit('storeUserData', {username: this.props.username});
         });
 
         socket.on('chat message', (msg) => {
             this.reseiveMessage(msg)
         });
+
+        //this.props.chatActions.getChannels();
+        //console.log(this);
 
     }
 
@@ -59,18 +70,23 @@ class Chat extends Component {
             </a>
         );*/
         const  emojiModal = '';
-
+        const messages = [];
+        this.state.messages.forEach((message) => {
+            if (message.channelId === this.props.currentChannel) {}
+            messages.push(message);
+        });
+        console.log(messages);
         return (
             <div className="container">
                 <div className={'row'}>
                 <div className={'col-md-2 jumbotron'}>
-                    <NameSpaceList currentChannel={this.props.currentChannel} changeChannel={this.props.changeChannel}/>
+                    <ChannelList/>
                 </div>
                 <div className={'col-md-10'}>
                     <div className="jumbotron">
                         <h1 className="display-3">Chat</h1>
                         <Messages
-                            messages={this.state.messages}
+                            messages={messages}
                         />
                         {emojiModal}
 
@@ -93,7 +109,7 @@ class Chat extends Component {
 
     sendMessage() {
         if (this.state.message) {
-            socket.emit('chat message', {id: 3, username: this.props.username, text: this.state.message});
+            socket.emit('chat message', {channelId: this.props.currentChannel, username: this.props.username, text: this.state.message});
             this.setState({
                 message: ''
             })
@@ -114,4 +130,18 @@ class Chat extends Component {
     }
 }
 
-export default Chat
+function mapStateToProps(state) {
+    return {
+        currentChannel: state.chat.currentChannel,
+        channels: state.chat.channels,
+        //changeChannel: state.chat.changeChannel
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        chatActions: bindActionCreators(chatActions, dispatch),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat)

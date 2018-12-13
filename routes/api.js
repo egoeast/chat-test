@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user').User;
+var Channel = require('../models/channel').Channel;
 var HttpError = require('../error/index').HttpError;
 var async = require('async');
 
@@ -56,6 +57,23 @@ router.post('/login', function (req, res, next) {
         })*/
 
 });
+
+router.get('/channels', function (req, res, next) {
+    /*let newChannel = new Channel({name: 'Test Channel 2'});
+    newChannel.save();
+
+    newChannel = new Channel({name: 'Test Channel 3'});
+    newChannel.save();*/
+
+    Channel.find((err, channels) => {
+        if (err) {
+            return next(err);
+        }
+        res.send({status: 200, channels: channels});
+    });
+
+});
+
 
 router.post('/logout', function (req, res, next) {
    req.session.destroy();

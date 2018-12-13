@@ -12,7 +12,8 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 //import User from '../components/User'
 //import Page from '../components/Page'
-import * as chatActions from '../actions/ChatActions'
+import * as chatActions from '../actions/ChatActions';
+import * as userActions from '../actions/UserActions';
 
 class App extends Component {
 
@@ -32,7 +33,7 @@ class App extends Component {
                 (response) => {
                     let user = response.data.user;
                     if (user) {
-                        this.setAuth(true, user.username);
+                        this.props.userActions.authUser(user.username);
                     } else {
                         /*this.setState({
                             message: 'Error'
@@ -46,19 +47,20 @@ class App extends Component {
     }
 
     render() {
+        //console.log(this);
         return (
             <Router>
                 <div>
-                    <h2>Hi, {this.props.name} {this.props.sername}</h2>
+                    <h2>Hi, {this.props.name}</h2>
                     <ul>
                         <li>
                             <Link to="/">Home</Link>
                         </li>
                         <li>
-                            {!this.state.isAuthenticated ?
+                            {!this.props.isAuthenticated ?
                                 <Link to="/login">Login</Link>
                                 :
-                                <a onClick={this.logOut.bind(this)}>Logout </a>
+                                <a onClick={this.props.userActions.logOut}>Logout </a>
                             }
                         </li>
                         <li>
@@ -68,20 +70,19 @@ class App extends Component {
                     </ul>
                     <hr/>
                     <h1 className="display-3">{this.props.parent}</h1>
-                    <h1>{this.state.message} , {this.state.username}</h1>
                     <Route exact path="/" component={Home}/>
                     <Route path="/login" render={() => (
-                        !this.state.isAuthenticated ? (
-                            <Login auth={this.setAuth.bind(this)}/>
+                        !this.props.isAuthenticated ? (
+                            <Login authUser={this.props.userActions.authUser}/>
                         ) : (
                             <Redirect to="/chat"/>
                         )
                     )}/>
                     {/*<PrivateRoute auth={this.state.isAuthenticated} path="/chat" redirectTo="/login" component={Chat} />*/}
                     <Route exact path="/chat" render={() => (
-                        this.state.isAuthenticated ? (
+                        this.props.isAuthenticated ? (
                             <Chat
-                                username={this.state.username} currentChannel={this.props.currentChannel} changeChannel={this.props.chatActions.changeChannel}
+                                username={this.props.name} /*currentChannel={this.props.currentChannel} changeChannel={this.props.chatActions.changeChannel}*/
                             />
                         ) : (
                             <Redirect to="/login"/>
@@ -138,15 +139,17 @@ App.propTypes = {
 function mapStateToProps(state) {
     return {
         name: state.user.name,
-        sername: state.user.sername,
+        isAuthenticated: state.user.isAuthenticated,
         currentChannel: state.chat.currentChannel,
+
         //changeChannel: state.chat.changeChannel
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        chatActions: bindActionCreators(chatActions, dispatch)
+        //chatActions: bindActionCreators(chatActions, dispatch),
+        userActions: bindActionCreators(userActions, dispatch)
     }
 }
 

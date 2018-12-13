@@ -1,10 +1,18 @@
-import {AUTH_USER} from '../constants/User'
+import {AUTH_USER, LOG_OUT} from '../constants/User'
 
-export function authUser(year) {
+export function authUser(name) {
     return (dispatch) => {
         dispatch({
             type: AUTH_USER,
-            payload: year
+            payload: name
+        });
+    }
+}
+
+export function logOut() {
+    return (dispatch) => {
+        dispatch({
+            type: LOG_OUT,
         });
     }
 }

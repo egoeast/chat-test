@@ -36,6 +36,7 @@ class Login extends Component {
     }
 
     render() {
+        console.log(this);
         return (
 
             <div className="container">
@@ -72,7 +73,8 @@ class Login extends Component {
                     data = response.data;
                     console.log(data.status);
                     if (data.status === 200) {
-                        this.props.auth(true, data.username);
+                        //this.props.auth(true, data.username);
+                        this.props.authUser(data.username)
                     } else {
                         this.setState({
                             message: data.text
