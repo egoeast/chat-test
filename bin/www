@@ -76,6 +76,9 @@ io.on('connection', function(socket){
 
     socket.on('disconnect', () => {
         Connection.findOne({socketId: socket.id}, (err, conn) => {
+            if (err) {
+                return next(err);
+            }
             let id = crypto.randomBytes(20).toString('hex');
             io.emit('chat message', {_id: id, username: 'system', text: 'A user ' + conn.username + ' disconnected'});
             conn.remove();

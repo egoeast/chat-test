@@ -5,10 +5,8 @@ import style from './Chat.less';
 import Emoji from 'react-emoji-render';
 import ChannelList from '../ChannelListList/ChannelList';
 import * as chatActions from "../../actions/ChatActions";
-import * as userActions from "../../actions/UserActions";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import axios from "axios/index";
 
 let socket;
 let emojiArray = [':grinning:', ':grin:', ':joy:', ':smiley:', ':smile:'];
@@ -20,25 +18,20 @@ class Chat extends Component {
 
         this.state = {
             message: '',
-            messages: []
         };
     }
 
     componentDidMount() {
 
-
+        this.props.chatActions.getChannels();
         socket = io();
         socket.on('connect', () => {
-            console.log(socket);
             socket.emit('storeUserData', {username: this.props.username});
         });
 
         socket.on('chat message', (msg) => {
             this.reseiveMessage(msg)
         });
-
-        //this.props.chatActions.getChannels();
-        //console.log(this);
 
     }
 
@@ -70,26 +63,31 @@ class Chat extends Component {
             </a>
         );*/
         const  emojiModal = '';
-        const messages = [];
-        this.state.messages.forEach((message) => {
+      /*  const messages = [];
+        this.props.messages.forEach((message) => {
             if (message.channelId === this.props.currentChannel) {}
             messages.push(message);
         });
-        console.log(messages);
+        console.log(messages);*/
+      const currentChannel = this.props.channels.find(channel => channel._id === this.props.currentChannel);
+      console.log(currentChannel);
+      let messages = this.props.messages;
+      if (currentChannel) {
+          messages = currentChannel.messages;
+      }
         return (
             <div className="container">
                 <div className={'row'}>
                 <div className={'col-md-2 jumbotron'}>
-                    <ChannelList/>
+                    <ChannelList channels={this.props.channels} />
                 </div>
                 <div className={'col-md-10'}>
                     <div className="jumbotron">
-                        <h1 className="display-3">Chat</h1>
+                        <h3 className="display-6">{ currentChannel ? currentChannel.name : ''  }</h3>
                         <Messages
                             messages={messages}
                         />
                         {emojiModal}
-
                         <div className="input-group">
                             <input placeholder={'Type message...'} onChange={this.handleChangeMessage.bind(this)}
                                    className="form-control" onKeyPress={this.handleKeyPress.bind(this)}
@@ -117,12 +115,8 @@ class Chat extends Component {
     }
 
     reseiveMessage(message) {
-        const arrayMsg = this.state.messages;
-        arrayMsg.push(message);
-        console.log(message);
-        this.setState({
-            messages: arrayMsg
-        });
+        this.props.chatActions.reseiveMessage(message);
+        this.forceUpdate();
     }
 
     componentWillUnmount() {
@@ -134,7 +128,7 @@ function mapStateToProps(state) {
     return {
         currentChannel: state.chat.currentChannel,
         channels: state.chat.channels,
-        //changeChannel: state.chat.changeChannel
+        messages: state.chat.messages,
     }
 }
 

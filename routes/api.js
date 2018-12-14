@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user').User;
-var Channel = require('../models/channel').Channel;
 var HttpError = require('../error/index').HttpError;
 var async = require('async');
+var Channel = require('../models/channel').Channel;
+var Message = require('../models/message').Message;
 
 router.get('/', function (req, res, next) {
     res.send({user: req.user});
+    console.log(req.user);
 });
 
 router.post('/login', function (req, res, next) {
@@ -60,9 +62,6 @@ router.post('/login', function (req, res, next) {
 
 router.get('/channels', function (req, res, next) {
     /*let newChannel = new Channel({name: 'Test Channel 2'});
-    newChannel.save();
-
-    newChannel = new Channel({name: 'Test Channel 3'});
     newChannel.save();*/
 
     Channel.find((err, channels) => {
@@ -72,8 +71,24 @@ router.get('/channels', function (req, res, next) {
         res.send({status: 200, channels: channels});
     });
 
+
 });
 
+router.get('/get-channel-messages', function (req, res, next) {
+    /*let newChannel = new Channel({name: 'Test Channel 2'});
+    newChannel.save();*/
+
+    let channelId = req.query.channelId;
+    console.log(channelId);
+    Message.find({channelId : channelId}, (err, messages) => {
+        if (err) {
+            return next(err);
+        }
+        console.log(messages);
+        res.send({status: 200, messages: messages});
+    });
+
+});
 
 router.post('/logout', function (req, res, next) {
    req.session.destroy();

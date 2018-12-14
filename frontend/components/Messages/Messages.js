@@ -13,6 +13,9 @@ class Messages extends Component {
 
     componentDidMount() {
     }
+    componentDidUpdate() {
+        console.log(this.props);
+    }
     render() {
         const {messages} = this.props;
 
@@ -31,4 +34,4 @@ class Messages extends Component {
     }
 }
 
-export default Messages;
+export default Messages

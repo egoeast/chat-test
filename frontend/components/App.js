@@ -6,13 +6,9 @@ import Home from './Home';
 import Login from './Login';
 import Chat from './Chat/Chat';
 import {BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
-import PrivateRoute from './PrivateRoute';
 
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-//import User from '../components/User'
-//import Page from '../components/Page'
-import * as chatActions from '../actions/ChatActions';
 import * as userActions from '../actions/UserActions';
 
 class App extends Component {
@@ -47,7 +43,6 @@ class App extends Component {
     }
 
     render() {
-        //console.log(this);
         return (
             <Router>
                 <div>
@@ -71,21 +66,20 @@ class App extends Component {
                     <hr/>
                     <h1 className="display-3">{this.props.parent}</h1>
                     <Route exact path="/" component={Home}/>
+                    <Route exact path="/chat" render={() => (
+                        this.props.isAuthenticated ? (
+                            <Chat
+                                username={this.props.name}
+                            />
+                        ) : (
+                            <Redirect to="/login"/>
+                        )
+                    )}/>
                     <Route path="/login" render={() => (
                         !this.props.isAuthenticated ? (
                             <Login authUser={this.props.userActions.authUser}/>
                         ) : (
                             <Redirect to="/chat"/>
-                        )
-                    )}/>
-                    {/*<PrivateRoute auth={this.state.isAuthenticated} path="/chat" redirectTo="/login" component={Chat} />*/}
-                    <Route exact path="/chat" render={() => (
-                        this.props.isAuthenticated ? (
-                            <Chat
-                                username={this.props.name} /*currentChannel={this.props.currentChannel} changeChannel={this.props.chatActions.changeChannel}*/
-                            />
-                        ) : (
-                            <Redirect to="/login"/>
                         )
                     )}/>
 
@@ -95,21 +89,13 @@ class App extends Component {
         )
     }
 
-    setAuth(status, username) {
-        this.setState({
-            isAuthenticated: status,
-            username: username
-        })
-    }
-
     logOut() {
-        axios.post('/api/logout')
+        /*axios.post('/api/logout')
             .then(
                 (response) => {
                     let data = response.data;
                     console.log(response.data);
                     if (data.status === 200) {
-                        //this.props.auth(true, data.username);
                         this.setState({
                             isAuthenticated: false,
                             username: 'Guest',
@@ -124,7 +110,7 @@ class App extends Component {
             )
             .catch((error) => {
                 console.log(error);
-            });
+            });*/
     }
 }
 
@@ -132,23 +118,16 @@ App.propTypes = {
     greeting: PropTypes.string
 };
 
-/*App.defaultProps = {
-    greeting: 'Hi'
-};*/
-
 function mapStateToProps(state) {
     return {
         name: state.user.name,
         isAuthenticated: state.user.isAuthenticated,
         currentChannel: state.chat.currentChannel,
-
-        //changeChannel: state.chat.changeChannel
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        //chatActions: bindActionCreators(chatActions, dispatch),
         userActions: bindActionCreators(userActions, dispatch)
     }
 }
