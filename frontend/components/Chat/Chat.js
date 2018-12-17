@@ -47,6 +47,10 @@ class Chat extends Component {
         }
     }
 
+    componentDidUpdate() {
+        console.log('Chat update');
+    }
+
     addEmoji(em) {
         //console.log(em);
         /*let mess = this.state.message + em;
@@ -70,22 +74,25 @@ class Chat extends Component {
         });
         console.log(messages);*/
       const currentChannel = this.props.channels.find(channel => channel._id === this.props.currentChannel);
-      console.log(currentChannel);
+
       let messages = this.props.messages;
       if (currentChannel) {
           messages = currentChannel.messages;
       }
+        console.log('messages:');
+        console.log( messages);
         return (
             <div className="container">
                 <div className={'row'}>
                 <div className={'col-md-2 jumbotron'}>
-                    <ChannelList channels={this.props.channels} />
+                    <ChannelList channels={this.props.channels} changeChannel={this.props.chatActions.changeChannel} getChannelMessages={this.props.chatActions.getChannelMessages}/>
                 </div>
                 <div className={'col-md-10'}>
                     <div className="jumbotron">
                         <h3 className="display-6">{ currentChannel ? currentChannel.name : ''  }</h3>
                         <Messages
                             messages={messages}
+                            fetching={this.props.fetching}
                         />
                         {emojiModal}
                         <div className="input-group">
@@ -129,6 +136,7 @@ function mapStateToProps(state) {
         currentChannel: state.chat.currentChannel,
         channels: state.chat.channels,
         messages: state.chat.messages,
+        fetching: state.chat.fetching,
     }
 }
 

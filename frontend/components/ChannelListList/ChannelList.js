@@ -15,11 +15,12 @@ export default class ChannelList extends Component {
 
     componentDidMount() {
         //this.props.chatActions.getChannels();
+            console.log('Channellist update');
     }
 
     handleClick(id) {
-        //this.props.chatActions.changeChannel(id);
-        //this.props.chatActions.getChannelMessages(id);
+        this.props.changeChannel(id);
+        //this.props.getChannelMessages(id);
     }
 
     render () {

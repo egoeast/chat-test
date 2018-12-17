@@ -13,8 +13,9 @@ class Messages extends Component {
 
     componentDidMount() {
     }
+
     componentDidUpdate() {
-        console.log(this.props);
+        console.log('Messages update');
     }
     render() {
         const {messages} = this.props;
@@ -26,6 +27,7 @@ class Messages extends Component {
             </li>);
         return(
             <div className={'message-container'}>
+                <b>{this.props.fetching ? 'Loading' : 'Loaded'}</b>
                 <ul className={'message-list'}>
                     {messageList}
                 </ul>
