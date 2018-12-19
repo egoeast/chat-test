@@ -9,10 +9,7 @@ import axios from "axios";
 
 export function changeChannel(channelId) {
     return (dispatch) => {
-        dispatch({
-            type: CHANGE_CHANNEL,
-            payload: channelId
-        });
+
         dispatch({
             type: GET_CHANNEL_MESSAGES_REQUEST,
             payload: channelId
@@ -25,7 +22,11 @@ export function changeChannel(channelId) {
                 payload: [1,2,3,4],
                 channelId: channelId
             })*/
-        }, 1000)
+            dispatch({
+                type: CHANGE_CHANNEL,
+                payload: channelId
+            });
+        }, 500)
     }
 }
 

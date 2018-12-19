@@ -23,15 +23,25 @@ class Chat extends Component {
 
     componentDidMount() {
 
-        this.props.chatActions.getChannels();
-        socket = io();
-        socket.on('connect', () => {
-            socket.emit('storeUserData', {username: this.props.username});
-        });
+        const title = 'Simple Title';
+        const options = {
+            body: 'Simple piece of body text.\nSecond line of body text :)'
+        };
+        console.log('Chat did mount');
+        if (!this.props.firstLoading) {
+            this.props.chatActions.getChannels();
+            this.props.chatActions.changeChannel('5c10df718abfa529a03ca5f5');
+            //console.log(this.props);
+            socket = io();
+            socket.on('connect', () => {
+                socket.emit('storeUserData', {username: this.props.username});
+            });
 
-        socket.on('chat message', (msg) => {
-            this.reseiveMessage(msg)
-        });
+            socket.on('chat message', (msg) => {
+                this.reseiveMessage(msg)
+            });
+        }
+
 
     }
 
@@ -61,52 +71,50 @@ class Chat extends Component {
     }
 
     render() {
-       /* const emojiModal = emojiArray.map((em, index) =>
-            <a href={''} onClick={this.addEmoji(em)}>
-                {em}
-            </a>
-        );*/
-        const  emojiModal = '';
-      /*  const messages = [];
-        this.props.messages.forEach((message) => {
-            if (message.channelId === this.props.currentChannel) {}
-            messages.push(message);
-        });
-        console.log(messages);*/
-      const currentChannel = this.props.channels.find(channel => channel._id === this.props.currentChannel);
+        /* const emojiModal = emojiArray.map((em, index) =>
+             <a href={''} onClick={this.addEmoji(em)}>
+                 {em}
+             </a>
+         );*/
+        const emojiModal = '';
+        /*  const messages = [];
+          this.props.messages.forEach((message) => {
+              if (message.channelId === this.props.currentChannel) {}
+              messages.push(message);
+          });
+          console.log(messages);*/
+        const currentChannel = this.props.channels.find(channel => channel._id === this.props.currentChannel);
 
-      let messages = this.props.messages;
-      if (currentChannel) {
-          messages = currentChannel.messages;
-      }
-        console.log('messages:');
-        console.log( messages);
+        let messages = this.props.messages;
+        if (currentChannel) {
+            messages = currentChannel.messages;
+        }
         return (
             <div className="container">
                 <div className={'row'}>
-                <div className={'col-md-2 jumbotron'}>
-                    <ChannelList channels={this.props.channels} changeChannel={this.props.chatActions.changeChannel} getChannelMessages={this.props.chatActions.getChannelMessages}/>
-                </div>
-                <div className={'col-md-10'}>
-                    <div className="jumbotron">
-                        <h3 className="display-6">{ currentChannel ? currentChannel.name : ''  }</h3>
-                        <Messages
-                            messages={messages}
-                            fetching={this.props.fetching}
-                        />
-                        {emojiModal}
-                        <div className="input-group">
-                            <input placeholder={'Type message...'} onChange={this.handleChangeMessage.bind(this)}
-                                   className="form-control" onKeyPress={this.handleKeyPress.bind(this)}
-                                   value={this.state.message}/>
-                            <div className="input-group-append">
-                                <button className="btn btn-outline-secondary" type="button"
-                                        onClick={this.sendMessage.bind(this)}>Send
-                                </button>
+                    <div className={'col-md-2 jumbotron'}>
+                        <ChannelList channels={this.props.channels} changeChannel={this.props.chatActions.changeChannel}
+                                     getChannelMessages={this.props.chatActions.getChannelMessages}/>
+                    </div>
+                    <div className={'col-md-10'}>
+                        <div className="jumbotron">
+                            <h6 className="display-6">{currentChannel && !this.props.fetching ? currentChannel.name : 'Loading'}</h6>
+                            <Messages
+                                messages={messages}
+                            />
+                            {emojiModal}
+                            <div className="input-group">
+                                <input placeholder={'Type message...'} onChange={this.handleChangeMessage.bind(this)}
+                                       className="form-control" onKeyPress={this.handleKeyPress.bind(this)}
+                                       value={this.state.message}/>
+                                <div className="input-group-append">
+                                    <button className="btn btn-outline-secondary" type="button"
+                                            onClick={this.sendMessage.bind(this)}>Send
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
         )
@@ -114,7 +122,11 @@ class Chat extends Component {
 
     sendMessage() {
         if (this.state.message) {
-            socket.emit('chat message', {channelId: this.props.currentChannel, username: this.props.username, text: this.state.message});
+            socket.emit('chat message', {
+                channelId: this.props.currentChannel,
+                username: this.props.username,
+                text: this.state.message
+            });
             this.setState({
                 message: ''
             })
@@ -137,6 +149,7 @@ function mapStateToProps(state) {
         channels: state.chat.channels,
         messages: state.chat.messages,
         fetching: state.chat.fetching,
+        firstLoading: state.chat.firstLoading,
     }
 }
 

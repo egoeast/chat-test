@@ -27,7 +27,6 @@ class Messages extends Component {
             </li>);
         return(
             <div className={'message-container'}>
-                <b>{this.props.fetching ? 'Loading' : 'Loaded'}</b>
                 <ul className={'message-list'}>
                     {messageList}
                 </ul>
