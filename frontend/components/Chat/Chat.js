@@ -135,6 +135,17 @@ class Chat extends Component {
 
     reseiveMessage(message) {
         this.props.chatActions.reseiveMessage(message);
+        const title = message.username;
+        const options = {
+            body: message.text,
+        };
+        navigator.serviceWorker.getRegistration().onclick = function(event) {
+            event.preventDefault(); // prevent the browser from focusing the Notification's tab
+            window.open('http://www.mozilla.org', '_blank');
+        }
+        navigator.serviceWorker.getRegistration().then((registration) => {
+            setTimeout(() => {registration.showNotification(title, options);}, 5000)
+        });
         this.forceUpdate();
     }
 
