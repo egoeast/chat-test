@@ -135,16 +135,52 @@ class Chat extends Component {
 
     reseiveMessage(message) {
         this.props.chatActions.reseiveMessage(message);
-        const title = message.username;
+        /*const title = message.username;
         const options = {
             body: message.text,
+        };*/
+
+        const title = 'Actions Notification';
+        const options = {
+            actions: [
+                {
+                    action: 'coffee-action',
+                    title: 'Coffee',
+                    icon: '/images/demos/action-1-128x128.png'
+                },
+                {
+                    action: 'doughnut-action',
+                    title: 'Doughnut',
+                    icon: '/images/demos/action-2-128x128.png'
+                },
+                {
+                    action: 'gramophone-action',
+                    title: 'gramophone',
+                    icon: '/images/demos/action-3-128x128.png'
+                },
+                {
+                    action: 'atom-action',
+                    title: 'Atom',
+                    icon: '/images/demos/action-4-128x128.png'
+                }
+            ]
         };
-        navigator.serviceWorker.getRegistration().onclick = function(event) {
-            event.preventDefault(); // prevent the browser from focusing the Notification's tab
-            window.open('http://www.mozilla.org', '_blank');
+
+        const maxVisibleActions = Notification.maxActions;
+        if (maxVisibleActions < 4) {
+            options.body = `This notification will only display ` +
+                `${maxVisibleActions} actions.`;
+        } else {
+            options.body = `This notification can display up to ` +
+                `${maxVisibleActions} actions.`;
         }
+
+
+
         navigator.serviceWorker.getRegistration().then((registration) => {
-            setTimeout(() => {registration.showNotification(title, options);}, 5000)
+
+            setTimeout(() => {registration.showNotification(title, options);}, 50)
+
         });
         this.forceUpdate();
     }
