@@ -19,7 +19,7 @@ var Channel = require('../models/channel').Channel;
  */
 
 //var port = normalizePort(process.env.PORT || config.get('port'));
-var port = normalizePort(process.env.PORT || 3000);
+var port = normalizePort(process.env.PORT || 3001);
 app.set('port', port);
 
 /**
@@ -80,8 +80,9 @@ io.on('connection', function(socket){
                 return next(err);
             }
             let id = crypto.randomBytes(20).toString('hex');
-            io.emit('chat message', {_id: id, username: 'system', text: 'A user ' + conn.username + ' disconnected'});
-            conn.remove();
+            console.log('disconnected');
+            //io.emit('chat message', {_id: id, username: 'system', text: 'A user ' + conn.username + ' disconnected'});
+            //conn.remove();
         });
 
         console.log('user disconnected with id ' + socket.id);

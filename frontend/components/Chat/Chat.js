@@ -179,7 +179,7 @@ class Chat extends Component {
 
         navigator.serviceWorker.getRegistration().then((registration) => {
 
-            setTimeout(() => {registration.showNotification(title, options);}, 50)
+            //setTimeout(() => {registration.showNotification(title, options);}, 50)
 
         });
         this.forceUpdate();

@@ -41,7 +41,7 @@ router.post('/login', function (req, res, next) {
         if (err) return next(err);
         console.log(err);
         req.session.user = user._id;
-        res.send({status: 200, text: 'Ok', username: user.username});
+        res.send({status: 200, text: 'Welcome!', username: user.username});
     });
     /*
         User.findOne({username: userName}, (err, user) => {
