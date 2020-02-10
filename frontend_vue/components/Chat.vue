@@ -12,12 +12,13 @@
                 <messages :messages="messages"></messages>
                 <!--{emojiModal}-->
                 <div class="input-group">
-                    <input placeholder="Type message..." v-model="message" class="form-control" @keyup.enter.exact="sendMessage" @keyup.shift.enter.prevent="newLine"/>
-                    <div class="input-group-append">
+                    <textarea placeholder="Type message..." v-model="message" class="form-control" @keyup.enter.exact="sendMessage" @keyup.shift.enter.prevent="newLine" rows="4"></textarea>
+
+                    <!--<div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"
                                 @click="sendMessage">Send
                         </button>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -44,19 +45,22 @@ export default {
             message: "",
             messages: [
 
-            ]
+            ],
+            isFocus: false
         }
     },
     computed: {
         ...mapState({
-            user: state => state.user.name
+            user: state => state.user.name,
+            userId: state => state.user.id
         })
     },
     methods: {
         sendMessage() {
-            if (this.message) {
+            if (this.message !== "") {
                 socket.emit('chat message', {
                     channelId: 1,
+                    userId: this.userId,
                     username: this.user,
                     text: this.message
                 });
@@ -64,7 +68,7 @@ export default {
             }
         },
         newLine() {
-            this.message += "\n";
+            //this.message += "\n";
         }
     },
     created() {
@@ -74,10 +78,25 @@ export default {
             socket.emit('storeUserData', {username: this.user});
         });
 
-        socket.on('chat message', (msg) => {
-            console.log(msg);
-            this.messages.push(msg);
+        window.focus();
+
+        window.addEventListener('focus', function() {
+            this.isFocus = true;
         });
+
+        window.addEventListener('blur', function() {
+            this.isFocus = false;
+        });
+
+        socket.on('chat message', (msg) => {
+            this.messages.push(msg);
+
+            if (Notification.permission === "granted" && msg.userId !== this.userId && !this.isFocus) {
+                let title = 'Message, Motherfucker!!!';
+                new Notification(title, {body: msg.text});
+            }
+        });
+
     },
     mounted() {
 
@@ -87,5 +106,8 @@ export default {
 </script>
 
 <style>
+    .form-control {
+        margin-top: 15px;
+    }
 
 </style>

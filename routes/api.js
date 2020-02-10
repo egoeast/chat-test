@@ -7,7 +7,7 @@ var Channel = require('../models/channel').Channel;
 var Message = require('../models/message').Message;
 
 router.get('/', function (req, res, next) {
-    res.send({user: req.user});
+    res.send({username: req.user.username, id: req.user._id});
     console.log(req.user);
 });
 
@@ -41,7 +41,7 @@ router.post('/login', function (req, res, next) {
         if (err) return next(err);
         console.log(err);
         req.session.user = user._id;
-        res.send({status: 200, text: 'Welcome!', username: user.username});
+        res.send({status: 200, text: 'Welcome!', username: user.username, id: user._id});
     });
     /*
         User.findOne({username: userName}, (err, user) => {

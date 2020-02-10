@@ -54,10 +54,20 @@ export default {
             }
         });
 
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        }
+
+        if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(function (permission) {
+
+            });
+        }
+
+
     },
     beforeRouteUpdate (to, from, next) {
         console.log(to);
-        console.log('dasd');
         if (!this.userName) next('/login');
         else next()
     },

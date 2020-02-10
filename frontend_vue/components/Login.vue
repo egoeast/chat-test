@@ -40,11 +40,14 @@ export default {
         sendRequest() {
             this.loading = true;
             this.loginUser({username: this.login, password: this.password}).then((message) => {
-                this.message = message;
+                this.message = message.text;
                 this.loading = false;
-                setTimeout(() => {
-                    this.$router.push({name: 'chat'});
-                },500)
+
+                if (message.status === 'ok') {
+                    setTimeout(() => {
+                        this.$router.push({name: 'chat'});
+                    }, 500)
+                }
             })
         }
     }

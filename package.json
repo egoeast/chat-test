@@ -54,6 +54,7 @@
     "style-loader": "^0.23.1",
     "vue-loader": "^15.8.3",
     "vue-template-compiler": "^2.6.11",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "workbox-webpack-plugin": "^5.0.0"
   }
 }

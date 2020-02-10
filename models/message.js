@@ -7,6 +7,10 @@ let schema = new Shema({
         type: String,
         required: true,
     },
+    userId: {
+        type: String,
+        required: true,
+    },
     channelId: {
         type: String,
         required: false,

@@ -3,7 +3,7 @@ import axios from 'axios'
 // initial state
 const state = {
     id: 0,
-    name: ''
+    name: '',
 };
 
 // getters
@@ -33,13 +33,11 @@ const actions = {
         return axios.get('/api/')
             .then(
                 (response) => {
-                    let user = response.data.user;
-                    if (user) {
-                        commit('setUserName', user.username);
+                    let data =  response.data;
+                    if (data.id) {
+                        commit('setUser', {name: response.data.username, id: response.data.id});
                     } else {
-                        /*this.setState({
-                            message: 'Error'
-                        });*/
+                        console.log(response);
                     }
                 }
             )
@@ -55,12 +53,12 @@ const actions = {
             .then(
                 (response) => {
                     let data = response.data;
-                    //console.log(data.status);
+                    //console.log(data);
                     if (data.status === 200) {
-                        commit('setUserName', data.username);
-                        return data.text;
+                        commit('setUser', {name: data.username, id: data.id});
+                        return {status: 'ok', text: data.text};
                     } else {
-                        return data.text;
+                        return {status: 'fail', text: data.text};
                     }
                 }
             )
@@ -74,7 +72,7 @@ const actions = {
                 (response) => {
                     let data = response.data;
                     if (data.status === 200) {
-                        commit('setUserName', '')
+                        commit('setUser', {name: '', id: 0})
                     } else {
 
                     }
@@ -89,8 +87,9 @@ const actions = {
 
 // mutations
 const mutations = {
-    setUserName(state, username) {
-        state.name = username;
+    setUser(state, {name, id}) {
+        state.name = name;
+        state.id = id;
     },
 
 };
