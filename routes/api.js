@@ -61,7 +61,7 @@ router.post('/login', function (req, res, next) {
 });
 
 router.get('/channels', function (req, res, next) {
-    /*let newChannel = new Channel({name: 'Test Channel 2'});
+   /* let newChannel = new Channel({name: 'Test Channel 3'});
     newChannel.save();*/
 
     Channel.find((err, channels) => {
@@ -74,11 +74,11 @@ router.get('/channels', function (req, res, next) {
 
 });
 
-router.get('/get-channel-messages', function (req, res, next) {
+router.get('/channel-messages', function (req, res, next) {
     /*let newChannel = new Channel({name: 'Test Channel 2'});
     newChannel.save();*/
 
-    let channelId = req.query.channelId;
+    let channelId = req.query.id;
     console.log(channelId);
     Message.find({channelId : channelId}, (err, messages) => {
         if (err) {

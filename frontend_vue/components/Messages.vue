@@ -2,8 +2,7 @@
     <div class="message-container">
         <ul class="message-list">
             <li class="article-list__li" v-for="(message,index) in messages">
-                <b>{{message.username}} : </b>
-                {{message.text}}
+                <message :message="message"></message>
             </li>
         </ul>
     </div>
@@ -12,6 +11,7 @@
 
 <script>
 
+import Message from "./Message.vue";
 export default {
 
     name: 'messages',
@@ -28,6 +28,7 @@ export default {
         }
     },
     components: {
+        Message
     },
     methods: {
 
@@ -37,5 +38,7 @@ export default {
 </script>
 
 <style>
-
+    .message-list {
+        list-style: none;
+    }
 </style>

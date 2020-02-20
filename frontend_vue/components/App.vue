@@ -1,18 +1,25 @@
 <template>
     <div>
       <h2>Hi, {{userName ? userName : 'Guest'}}</h2>
-      <ul>
-        <li>
-          <router-link to="/">Home</router-link>
-        </li>
-        <li v-if="isAuthenticated">
-          <router-link v-if="!userName" to="/login">Login</router-link>
-          <a href="" v-if="userName"  @click.prevent="logOut">Logout </a>
-        </li>
-        <li>
-          <router-link to="/chat">Chat</router-link>
-        </li>
-      </ul>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <router-link class="nav-link" to="/">Home</router-link>
+            </li>
+            <li>
+              <router-link class="nav-link" to="/chat">Chat</router-link>
+            </li>
+            <li v-if="isAuthenticated">
+              <router-link class="nav-link" v-if="!userName" to="/login">Login</router-link>
+              <a href="" class="nav-link" v-if="userName"  @click.prevent="logOut">Logout </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
       <hr/>
       <router-view></router-view>
     </div>

@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+//const host = 'http://192.168.100.13:3001';
+const host = '';
 // initial state
 const state = {
     id: 0,
@@ -30,7 +32,7 @@ const actions = {
         },1000);
     },*/
     checkUser({commit}) {
-        return axios.get('/api/')
+        return axios.get(host + '/api/')
             .then(
                 (response) => {
                     let data =  response.data;
@@ -46,7 +48,7 @@ const actions = {
             });
     },
     loginUser({commit}, {username, password}) {
-        return axios.post('/api/login', {
+        return axios.post(host + '/api/login', {
             password: password,
             username: username
         })
@@ -67,7 +69,7 @@ const actions = {
             });
     },
     logoutUser({commit}) {
-        axios.post('/api/logout')
+        axios.post(host + '/api/logout')
             .then(
                 (response) => {
                     let data = response.data;

@@ -7,9 +7,6 @@ let schema = new Shema({
         type: String,
         required: true,
     },
-    messages: {
-        type: Array,
-    },
     created: {
         type: Date,
         default: Date.now()

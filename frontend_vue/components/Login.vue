@@ -9,7 +9,7 @@
                 </div>
                 <div class="form-group">
                     <label for="pwd">Password:</label>
-                    <input name="password" v-model="password" type="password" class="form-control" id="pwd"/>
+                    <input name="password" v-model="password" type="password" class="form-control" id="pwd" @keyup.enter="sendRequest"/>
                 </div>
                 <a @click="sendRequest" class="btn btn-primary">{{ loading ? 'Loading' : 'Войти' }}</a>
                 <p class="message">{{message}}</p>

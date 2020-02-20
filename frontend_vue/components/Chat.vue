@@ -3,13 +3,14 @@
         <h1>Chat</h1>
         <div class="row">
             <div class="col-md-2 jumbotron">
-            <!--<ChannelList channels={this.props.channels} changeChannel={this.props.chatActions.changeChannel}
-                         getChannelMessages={this.props.chatActions.getChannelMessages}/>-->
+                <channel-list ></channel-list>
         </div>
         <div class="col-md-10">
-            <div class="jumbotron">
+            <div v-show="activeChannel" class="jumbotron">
                 <h6 class="display-6"><!--{currentChannel && !this.props.fetching ? currentChannel.name : 'Loading'}--></h6>
-                <messages :messages="messages"></messages>
+                <vuescroll ref="vs">
+                    <messages :messages="messages"></messages>
+                </vuescroll>
                 <!--{emojiModal}-->
                 <div class="input-group">
                     <textarea placeholder="Type message..." v-model="message" class="form-control" @keyup.enter.exact="sendMessage" @keyup.shift.enter.prevent="newLine" rows="4"></textarea>
@@ -29,6 +30,9 @@
 <script>
 
 import Messages from "./Messages.vue"
+import ChannelList from "./ChannelList.vue";
+import vuescroll from "vuescroll"
+
 import io from "socket.io-client"
 import {mapState} from 'vuex'
 
@@ -38,34 +42,45 @@ export default {
 
     name: 'chat',
     components: {
-        Messages
+        ChannelList,
+        Messages,
+        vuescroll
     },
     data() {
         return {
             message: "",
-            messages: [
-
-            ],
             isFocus: false
         }
     },
     computed: {
         ...mapState({
             user: state => state.user.name,
-            userId: state => state.user.id
+            userId: state => state.user.id,
+            activeChannel: state => state.chat.activeChannel,
+            messages: state => state.chat.messages
         })
     },
     methods: {
         sendMessage() {
             if (this.message !== "") {
                 socket.emit('chat message', {
-                    channelId: 1,
+                    channelId: this.activeChannel,
                     userId: this.userId,
                     username: this.user,
                     text: this.message
                 });
-                this.message = ""
+                this.message = "";
+                this.scrollDown();
+
             }
+        },
+        scrollDown() {
+            this.$refs['vs'].scrollTo(
+                {
+                    y: '100%'
+                },
+                10
+            );
         },
         newLine() {
             //this.message += "\n";
@@ -89,6 +104,7 @@ export default {
         });
 
         socket.on('chat message', (msg) => {
+            console.log(msg);
             this.messages.push(msg);
 
             if (Notification.permission === "granted" && msg.userId !== this.userId && !this.isFocus) {
