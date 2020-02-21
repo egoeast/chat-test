@@ -20,18 +20,14 @@ export default {
             type: Array
         }
     },
-    data() {
-        return {
-            /*messages: [
-                {username: 'Vasia', text: "Hello World!"}
-                ]*/
-        }
-    },
     components: {
         Message
     },
     methods: {
 
+    },
+    chanched() {
+        console.log('changed');
     }
 
 }

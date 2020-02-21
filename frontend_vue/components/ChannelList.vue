@@ -46,6 +46,7 @@
     .channel-list {
         list-style: none;
         padding: 0;
+        height: 100%;
     }
 
     .channel-list li {

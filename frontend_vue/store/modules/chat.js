@@ -43,6 +43,9 @@ const actions = {
     setActiveChannel({commit}, id) {
         commit('setActiveChannel', id);
     },
+    addMessage({commit}, message){
+        commit('pushMessage', message);
+    }
 };
 
 // mutations
@@ -56,6 +59,10 @@ const mutations = {
     setChannelMessages(state, messages) {
         state.messages = messages;
     },
+    pushMessage(state, message) {
+        state.messages.push(message);
+        console.log(state.messages);
+    }
 
 };
 

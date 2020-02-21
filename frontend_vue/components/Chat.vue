@@ -1,25 +1,37 @@
 <template>
-    <div class="container">
+    <div class="container chat">
         <h1>Chat</h1>
-        <div class="row">
+        <div class="row full-heigt">
             <div class="col-md-2 jumbotron">
-                <channel-list ></channel-list>
+                <channel-list @loaded="channelLoaded" ></channel-list>
         </div>
         <div class="col-md-10">
-            <div v-show="activeChannel" class="jumbotron">
+            <div class="jumbotron full-heigt" >
                 <h6 class="display-6"><!--{currentChannel && !this.props.fetching ? currentChannel.name : 'Loading'}--></h6>
-                <vuescroll ref="vs">
-                    <messages :messages="messages"></messages>
-                </vuescroll>
-                <!--{emojiModal}-->
-                <div class="input-group">
-                    <textarea placeholder="Type message..." v-model="message" class="form-control" @keyup.enter.exact="sendMessage" @keyup.shift.enter.prevent="newLine" rows="4"></textarea>
+                <div v-show="activeChannel">
+                    <div class="full-heigt" >
+                        <vuescroll ref="vs">
+                            <messages :messages="messages"></messages>
+                        </vuescroll>
+                    </div>
+                    <!--{emojiModal}-->
+                    <div>
+                    <textarea
+                            placeholder="Type message..."
+                            v-model="message"
+                            class="form-control"
+                            @keydown.enter.exact.prevent
+                            @keyup.enter.exact="sendMessage"
+                            @keyup.shift.enter.prevent="newLine"
+                            rows="4"
+                    ></textarea>
 
-                    <!--<div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button"
-                                @click="sendMessage">Send
-                        </button>
-                    </div>-->
+                        <!--<div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"
+                                    @click="sendMessage">Send
+                            </button>
+                        </div>-->
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,7 +46,7 @@ import ChannelList from "./ChannelList.vue";
 import vuescroll from "vuescroll"
 
 import io from "socket.io-client"
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
 let socket = io();
 
@@ -61,8 +73,12 @@ export default {
         })
     },
     methods: {
+        ...mapActions('chat', [
+            'addMessage'
+        ]),
         sendMessage() {
-            if (this.message !== "") {
+
+            if (this.message.replace(/\r?\n/g, "") !== "") {
                 socket.emit('chat message', {
                     channelId: this.activeChannel,
                     userId: this.userId,
@@ -70,8 +86,6 @@ export default {
                     text: this.message
                 });
                 this.message = "";
-                this.scrollDown();
-
             }
         },
         scrollDown() {
@@ -81,9 +95,14 @@ export default {
                 },
                 10
             );
+            console.log('scrollDown');
         },
         newLine() {
             //this.message += "\n";
+        },
+        channelLoaded() {
+            console.log('loaded');
+            this.scrollDown();
         }
     },
     created() {
@@ -105,18 +124,27 @@ export default {
 
         socket.on('chat message', (msg) => {
             console.log(msg);
-            this.messages.push(msg);
+            this.addMessage(msg).then(() => {
+                //console.log('Message added');
+                if (msg.userId === this.userId) {
+                    this.scrollDown();
+                }
+            });
 
+            //Show notification
             if (Notification.permission === "granted" && msg.userId !== this.userId && !this.isFocus) {
                 let title = 'Message, Motherfucker!!!';
                 new Notification(title, {body: msg.text});
             }
+
+            //scroll down  if it is your message
+            if (msg.userId === this.userId) {
+                this.scrollDown();
+            }
         });
 
-    },
-    mounted() {
 
-    }
+    },
 
 }
 </script>
@@ -126,4 +154,7 @@ export default {
         margin-top: 15px;
     }
 
+    .chat {
+        height: 650px;
+    }
 </style>
