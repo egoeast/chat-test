@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 //const host = 'http://192.168.100.13:3001';
+//const host = 'https://egoeast.xyz';
 const host = '';
 // initial state
 const state = {

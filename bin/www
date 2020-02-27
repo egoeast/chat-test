@@ -13,6 +13,7 @@ var Connection = require('../models/connection').Connection;
 var crypto = require("crypto");
 var HttpError = require('../error/index').HttpError;
 var Channel = require('../models/channel').Channel;
+const fs = require('fs');
 
 /**
  * Get port from environment and store in Express.
@@ -89,12 +90,60 @@ io.on('connection', function(socket){
     });
 
     socket.on('chat message', function(msg){
-       // console.log(socket);
-        let message = new Message({username: msg.username, userId: msg.userId, text: msg.text, channelId: msg.channelId});
+        //console.log(msg);
+        let message = new Message({username: msg.username, userId: msg.userId, text: msg.text, channelId: msg.channelId, created: Date.now()});
         message.save();
-        console.log('message: ' + message);
+        //console.log('message: ' + message);
         io.emit('chat message', message);
     });
+
+    let files = {},
+        struct = {
+            name: null,
+            type: null,
+            size: 0,
+            data: [],
+            slice: 0,
+        };
+
+    socket.on('slice upload', (data) => {
+        if (!files[data.name]) {
+            files[data.name] = Object.assign({}, struct, data);
+            files[data.name].data = [];
+        }
+        //convert the ArrayBuffer to Buffer
+        data.data = new Buffer.from(new Uint8Array(data.data));
+        //save the data
+        files[data.name].data.push(data.data);
+        files[data.name].slice++;
+
+        if (files[data.name].slice * 100000 >= files[data.name].size) {
+            var fileBuffer = Buffer.concat(files[data.name].data);
+
+            fs.open('public/uploads/' + data.name, 'w', function (err, fd) {
+                console.log('/public/uploads/' + data.name);
+                fs.write(fd, fileBuffer, (err) => {
+                    delete files[data.name];
+                    if (err) return socket.emit('upload error');
+                    socket.emit('end upload');
+                });
+            });
+
+        } else {
+            console.log('Slice:' + files[data.name].slice);
+            socket.emit('request slice upload', {
+                currentSlice: files[data.name].slice
+            });
+        }
+
+    });
+
+    /*socket.on('file upload', function (data) {
+        console.log("File data");
+        console.log(data);
+    })*/
+
+    //io.emit('chat message', {username: 'Mothefucker', userId: 1111, text: 'Hi mutafickers'});
 
 });
 

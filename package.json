@@ -7,6 +7,10 @@
     "build": "webpack"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.27",
+    "@fortawesome/free-solid-svg-icons": "^5.12.1",
+    "@fortawesome/vue-fontawesome": "^0.1.9",
     "@vuepress/plugin-pwa": "^1.3.0",
     "axios": "^0.18.0",
     "babel-core": "^6.26.3",
@@ -23,6 +27,7 @@
     "mongodb": "^3.1.6",
     "mongoose": "^5.3.1",
     "morgan": "~1.9.0",
+    "multer": "^1.4.2",
     "nconf": "^0.10.0",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
@@ -36,6 +41,7 @@
     "socket.io": "^2.1.1",
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
+    "vuedals": "^1.8.0",
     "vuescroll": "^4.15.0-beta.1",
     "vuex": "^3.1.2",
     "webpack": "^4.20.2",

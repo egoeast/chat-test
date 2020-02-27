@@ -6,6 +6,7 @@ var session = require('express-session');
 var lessMiddleware = require('less-middleware');
 var logger = require('morgan');
 var HttpError = require('./error/index').HttpError;
+var multer = require('multer');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -18,6 +19,7 @@ var apiRouter = require('./routes/api');
 //var config = require('./config/index');
 var MongoStore = require('connect-mongo')(session);
 var mongoose = require('./libs/mongoose');
+
 
 var app = express();
 
@@ -44,6 +46,9 @@ app.use(session({
         "maxAge": null
     },
 }));
+
+app.use((multer({dest:'./public/uploads/'}).any()));
+
 app.use(require('./middleware/loadUser'));
 
 app.use(lessMiddleware(path.join(__dirname, 'public')));

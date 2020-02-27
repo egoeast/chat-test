@@ -7,7 +7,11 @@ var Channel = require('../models/channel').Channel;
 var Message = require('../models/message').Message;
 
 router.get('/', function (req, res, next) {
-    res.send({username: req.user.username, id: req.user._id});
+    if (req.user) {
+        res.send({username: req.user.username, id: req.user._id});
+    } else {
+        console.log('without user');
+    }
     console.log(req.user);
 });
 
@@ -61,7 +65,7 @@ router.post('/login', function (req, res, next) {
 });
 
 router.get('/channels', function (req, res, next) {
-   /* let newChannel = new Channel({name: 'Test Channel 3'});
+    /*let newChannel = new Channel({name: 'Test Channel 1'});
     newChannel.save();*/
 
     Channel.find((err, channels) => {
@@ -70,21 +74,49 @@ router.get('/channels', function (req, res, next) {
         }
         res.send({status: 200, channels: channels});
     });
+});
 
+router.post('/add-channel', function (req, res, next) {
+    console.log(req.body);
+    let newChannel = new Channel({name: req.body.name});
+    newChannel.save(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.send({status: 200, channel: newChannel});
+    });
 
 });
+
+router.post('/upload-file', function (req, res, next) {
+    /*console.log(req.files);
+    console.log(req.user);
+    console.log(req.body);*/
+
+    let message = new Message({username: req.user.username, userId: req.user._id, text: req.body.message, channelId: '1', created: Date.now()});
+    message.save();
+
+    /*let newChannel = new Channel({name: req.body.name});
+    newChannel.save(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.send({status: 200, channel: newChannel});
+    });*/
+
+});
+
+
 
 router.get('/channel-messages', function (req, res, next) {
     /*let newChannel = new Channel({name: 'Test Channel 2'});
     newChannel.save();*/
 
     let channelId = req.query.id;
-    console.log(channelId);
     Message.find({channelId : channelId}, (err, messages) => {
         if (err) {
             return next(err);
         }
-        console.log(messages);
         res.send({status: 200, messages: messages});
     });
 

@@ -22,11 +22,13 @@
       </nav>
       <hr/>
       <router-view></router-view>
+      <vuedal></vuedal>
     </div>
 </template>
 
 <script>
 import {mapState, mapActions} from 'vuex'
+import {Component as Vuedal} from "vuedals"
 
 export default {
 
@@ -42,6 +44,7 @@ export default {
         })
     },
     components: {
+        Vuedal
     },
     methods: {
         ...mapActions('user', [
@@ -57,7 +60,7 @@ export default {
     created() {
         this.checkUser().then(() => {
             if (!this.userName && this.$router.currentRoute.name === 'chat') {
-                this.$router.push({name: 'home'});
+                this.$router.push({name: 'login'});
             }
         });
 
@@ -73,19 +76,14 @@ export default {
 
 
     },
-    beforeRouteUpdate (to, from, next) {
-        console.log(to);
-        if (!this.userName) next('/login');
-        else next()
-    },
-    beforeRouteLeave (to, from, next) {
-        const answer = window.confirm('Do you really want to leave? you have unsaved changes!');
-        if (answer) {
-            next()
-        } else {
-            next(false)
+    watch: {
+        $route(to, from) {
+            // react to route changes...
+            if (!this.userName && to.name === 'chat') {
+                this.$router.push({name: 'login'});
+            }
         }
-    }
+    },
 
 }
 </script>

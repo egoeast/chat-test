@@ -1,5 +1,5 @@
 <template>
-    <div class="message-container">
+    <div class="message-container full-heigt">
         <ul class="message-list">
             <li class="article-list__li" v-for="(message,index) in messages">
                 <message :message="message"></message>

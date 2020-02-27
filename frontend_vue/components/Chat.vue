@@ -6,10 +6,10 @@
                 <channel-list @loaded="channelLoaded" ></channel-list>
         </div>
         <div class="col-md-10">
-            <div class="jumbotron full-heigt" >
-                <h6 class="display-6"><!--{currentChannel && !this.props.fetching ? currentChannel.name : 'Loading'}--></h6>
+            <div class="jumbotron" style="height: 96%">
+                <h6 class="display-6"></h6>
                 <div v-show="activeChannel">
-                    <div class="full-heigt" >
+                    <div style="height: 450px">
                         <vuescroll ref="vs">
                             <messages :messages="messages"></messages>
                         </vuescroll>
@@ -25,12 +25,9 @@
                             @keyup.shift.enter.prevent="newLine"
                             rows="4"
                     ></textarea>
-
-                        <!--<div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"
-                                    @click="sendMessage">Send
-                            </button>
-                        </div>-->
+                    </div>
+                    <div>
+                        <button class="btn btn-danger" @click="openFilePopup">Add file</button>
                     </div>
                 </div>
             </div>
@@ -44,11 +41,10 @@
 import Messages from "./Messages.vue"
 import ChannelList from "./ChannelList.vue";
 import vuescroll from "vuescroll"
+import {Bus as VuedalsBus} from 'vuedals';
 
-import io from "socket.io-client"
 import {mapState, mapActions} from 'vuex'
-
-let socket = io();
+import UploadFile from "./UploadFile.vue";
 
 export default {
 
@@ -56,12 +52,13 @@ export default {
     components: {
         ChannelList,
         Messages,
-        vuescroll
+        vuescroll,
+        UploadFile
     },
     data() {
         return {
             message: "",
-            isFocus: false
+            isFocus: true,
         }
     },
     computed: {
@@ -79,7 +76,7 @@ export default {
         sendMessage() {
 
             if (this.message.replace(/\r?\n/g, "") !== "") {
-                socket.emit('chat message', {
+                this.$socket.emit('chat message', {
                     channelId: this.activeChannel,
                     userId: this.userId,
                     username: this.user,
@@ -102,47 +99,48 @@ export default {
         },
         channelLoaded() {
             console.log('loaded');
-            this.scrollDown();
+            setTimeout(() => {
+                this.scrollDown();
+            }, 200)
+        },
+        openFilePopup() {
+            VuedalsBus.$emit('new', {
+                component: UploadFile
+            });
         }
     },
     created() {
 
-        socket = io();
-        socket.on('connect', () => {
-            socket.emit('storeUserData', {username: this.user});
+        this.$socket.on('connect', () => {
+            this.$socket.emit('storeUserData', {username: this.user});
         });
 
         window.focus();
 
-        window.addEventListener('focus', function() {
+        window.addEventListener('focus', () => {
             this.isFocus = true;
         });
 
-        window.addEventListener('blur', function() {
+        window.addEventListener('blur', () => {
             this.isFocus = false;
         });
 
-        socket.on('chat message', (msg) => {
+        this.$socket.on('chat message', (msg) => {
             console.log(msg);
             this.addMessage(msg).then(() => {
                 //console.log('Message added');
-                if (msg.userId === this.userId) {
+                //scroll down  if it is your message
+                //if (msg.userId === this.userId) {
                     this.scrollDown();
-                }
+                //}
             });
 
             //Show notification
             if (Notification.permission === "granted" && msg.userId !== this.userId && !this.isFocus) {
-                let title = 'Message, Motherfucker!!!';
+                let title = msg.username;
                 new Notification(title, {body: msg.text});
             }
-
-            //scroll down  if it is your message
-            if (msg.userId === this.userId) {
-                this.scrollDown();
-            }
         });
-
 
     },
 

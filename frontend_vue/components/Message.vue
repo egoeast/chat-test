@@ -25,7 +25,6 @@
         created() {
             let date = moment(this.message.created);
             date.format( 'MM-DD-YYYY');
-            console.log(date.format( 'LT'));
         }
     }
 </script>

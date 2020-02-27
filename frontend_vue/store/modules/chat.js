@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 //const host = 'http://192.168.100.13:3001';
+//const host = 'https://egoeast.xyz';
 const host = '';
 // initial state
 const state = {
@@ -45,7 +46,20 @@ const actions = {
     },
     addMessage({commit}, message){
         commit('pushMessage', message);
-    }
+    },
+
+    addChannel({commit}, name) {
+        return axios.post(host + '/api/add-channel/', {name: name})
+            .then(
+                (response) => {
+                    console.log(response.data);
+                    commit('pushChannel', response.data.channel);
+                }
+            )
+            .catch((error) => {
+                console.log(error);
+            });
+    },
 };
 
 // mutations
@@ -62,6 +76,9 @@ const mutations = {
     pushMessage(state, message) {
         state.messages.push(message);
         console.log(state.messages);
+    },
+    pushChannel(state, channel) {
+        state.channels.push(channel);
     }
 
 };
