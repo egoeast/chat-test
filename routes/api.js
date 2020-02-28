@@ -5,14 +5,21 @@ var HttpError = require('../error/index').HttpError;
 var async = require('async');
 var Channel = require('../models/channel').Channel;
 var Message = require('../models/message').Message;
+let UserFile = require('../models/userFile').UserFile;
 
 router.get('/', function (req, res, next) {
     if (req.user) {
+        console.log('user in');
         res.send({username: req.user.username, id: req.user._id});
+        User.findOne(req.user._id).populate('attachments').exec(function (err, files) {
+            if (err) return console.log(err);
+            console.log('files');
+            console.log(files);
+        })
     } else {
         console.log('without user');
     }
-    console.log(req.user);
+    //console.log(req.user);
 });
 
 router.post('/login', function (req, res, next) {
@@ -117,6 +124,11 @@ router.get('/channel-messages', function (req, res, next) {
         if (err) {
             return next(err);
         }
+
+        messages.forEach((message) => {
+            //console.log(message.attachmensArray);
+        });
+
         res.send({status: 200, messages: messages});
     });
 

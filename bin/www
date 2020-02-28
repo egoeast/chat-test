@@ -9,6 +9,7 @@ var debug = require('debug')('chat:server');
 var http = require('http');
 //var config = require('config');
 var Message = require('../models/message').Message;
+var UserFile = require('../models/userFile').UserFile;
 var Connection = require('../models/connection').Connection;
 var crypto = require("crypto");
 var HttpError = require('../error/index').HttpError;
@@ -91,7 +92,7 @@ io.on('connection', function(socket){
 
     socket.on('chat message', function(msg){
         //console.log(msg);
-        let message = new Message({username: msg.username, userId: msg.userId, text: msg.text, channelId: msg.channelId, created: Date.now()});
+        let message = new Message({username: msg.username, userId: msg.userId, text: msg.text, channelId: msg.channelId, attachments: msg.attachments, created: Date.now()});
         message.save();
         //console.log('message: ' + message);
         io.emit('chat message', message);
@@ -107,35 +108,45 @@ io.on('connection', function(socket){
         };
 
     socket.on('slice upload', (data) => {
-        if (!files[data.name]) {
-            files[data.name] = Object.assign({}, struct, data);
-            files[data.name].data = [];
+        if (!files[data.fakeName]) {
+            files[data.fakeName] = Object.assign({}, struct, data);
+            files[data.fakeName].data = [];
         }
-        //convert the ArrayBuffer to Buffer
+
+        let file = files[data.fakeName];
+
+            //convert the ArrayBuffer to Buffer
         data.data = new Buffer.from(new Uint8Array(data.data));
         //save the data
-        files[data.name].data.push(data.data);
-        files[data.name].slice++;
+        if (!file.data[data.slice]) {
+            file.data.push(data.data);
+            file.slice++;
 
-        if (files[data.name].slice * 100000 >= files[data.name].size) {
-            var fileBuffer = Buffer.concat(files[data.name].data);
+            if (file.slice * data.chunkSize >= file.size) {
+                let fileBuffer = Buffer.concat(file.data);
 
-            fs.open('public/uploads/' + data.name, 'w', function (err, fd) {
-                console.log('/public/uploads/' + data.name);
-                fs.write(fd, fileBuffer, (err) => {
-                    delete files[data.name];
-                    if (err) return socket.emit('upload error');
-                    socket.emit('end upload');
+                let dir = './public/uploads/' + data.userId;
+                if (!fs.existsSync(dir)){
+                    fs.mkdirSync(dir);
+                }
+                fs.open(dir + '/' + data.fakeName, 'w', function (err, fd) {
+                    fs.write(fd, fileBuffer, (err) => {
+                        delete files[data.fakeName];
+                        if (err) return socket.emit('upload error');
+                        let userFile = new UserFile({name: data.fakeName, realName: data.name, type: data.type, userId: data.userId, created: Date.now()});
+                        userFile.save((err) => {
+                            if(err) return next(err);
+                            socket.emit('end upload', {file: userFile._id});
+                        });
+                    });
                 });
-            });
-
-        } else {
-            console.log('Slice:' + files[data.name].slice);
-            socket.emit('request slice upload', {
-                currentSlice: files[data.name].slice
-            });
+            } else {
+                socket.emit('request slice upload', {
+                    currentSlice: file.slice,
+                    fileName: data.name
+                });
+            }
         }
-
     });
 
     /*socket.on('file upload', function (data) {

@@ -29,6 +29,15 @@ Vue.use(Vuedals);
 //import { CardPlugin } from 'bootstrap-vue'
 //Vue.use(CardPlugin)
 
+const genUniqueId = function (length) {
+        return '_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 12);
+    };
+
+Vue.mixin({
+    methods: { genUniqueId }
+});
+
+
 Vue.config.productionTip = false;
 
 Vue.prototype.$socket = new io();
