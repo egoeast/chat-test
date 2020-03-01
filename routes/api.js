@@ -9,12 +9,12 @@ let UserFile = require('../models/userFile').UserFile;
 
 router.get('/', function (req, res, next) {
     if (req.user) {
-        console.log('user in');
+        //console.log('user in');
         res.send({username: req.user.username, id: req.user._id});
-        User.findOne(req.user._id).populate('attachments').exec(function (err, files) {
+        User.findOne(req.user._id).populate('messages').exec(function (err, files) {
             if (err) return console.log(err);
-            console.log('files');
-            console.log(files);
+            //console.log('files');
+            //console.log(files);
         })
     } else {
         console.log('without user');
@@ -84,7 +84,7 @@ router.get('/channels', function (req, res, next) {
 });
 
 router.post('/add-channel', function (req, res, next) {
-    console.log(req.body);
+   // console.log(req.body);
     let newChannel = new Channel({name: req.body.name});
     newChannel.save(function (err) {
         if (err) {
@@ -120,17 +120,25 @@ router.get('/channel-messages', function (req, res, next) {
     newChannel.save();*/
 
     let channelId = req.query.id;
-    Message.find({channelId : channelId}, (err, messages) => {
+    Message.find({channelId : channelId}).populate('attachments').exec(function (err, messages) {
         if (err) {
             return next(err);
         }
 
-        messages.forEach((message) => {
+        //console.log(messages);
+        /*messages.forEach((message) => {
             //console.log(message.attachmensArray);
-        });
+        });*/
 
         res.send({status: 200, messages: messages});
     });
+/*
+    Message.find({channelId : channelId}).populate('userId').exec(function (err, files) {
+        if (err) return console.log(err);
+        console.log('user');
+        console.log(files);
+    })
+*/
 
 });
 

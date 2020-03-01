@@ -4,19 +4,16 @@
 
 <script>
 
-export default {
+    export default {
 
-    name: 'app',
-    data() {
-        return {}
-    },
-    components: {
-    },
-    methods: {
+        name: 'app',
+        data() {
+            return {}
+        },
+        components: {},
+        methods: {}
 
     }
-
-}
 </script>
 
 <style>

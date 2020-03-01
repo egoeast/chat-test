@@ -9,8 +9,8 @@ let schema = new Shema({
         required: true,
     },
     userId: {
-        type: String,
-        required: true,
+        type: Shema.Types.ObjectId,
+        ref: 'user'
     },
     channelId: {
         type: String,
@@ -19,8 +19,9 @@ let schema = new Shema({
     attachments: [
         {
             type: Shema.Types.ObjectId,
-            ref: 'UserFile'}
-        ],
+            ref: 'UserFile'
+        }
+    ],
     created: {
         type: Date,
         default: Date.now()

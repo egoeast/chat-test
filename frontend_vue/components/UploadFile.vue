@@ -2,20 +2,25 @@
     <div class="container">
         <h3>File upload</h3>
         <div class="form-group">
-        <div class="row">
-            <textarea  class="form-control" v-model="message"></textarea>
-            <p>{{message}}</p>
-        </div>
-        <div class="row">
-            <ul>
-                <li class="file-list" v-for="(file,index) in files">
-                    {{file.name}} <span class="remove-file" @click="removeFile(index)">x</span>
-                </li>
-            </ul>
-        </div>
+            <div class="row">
+                <textarea class="form-control" v-model="message"></textarea>
+                <p>{{message}}</p>
+            </div>
+            <div class="row">
+                <ul>
+                    <li class="file-list" v-for="(file,index) in files">
+                        {{file.name}} <span class="remove-file" @click="removeFile(index)">x</span>
+                    </li>
+                </ul>
+            </div>
             <a href="#" @click.prevent="handleAddClick">Add files</a>
             <input class="form-control d-none" type="file" id="file" ref="file" @change="handleFileUpload" multiple/>
             <button class="btn" @click="submitFile">Submit</button>
+
+            <p class="upload-status">Uploaded: {{uploadedSize / totalSize * 100}} %</p>
+            <p class="upload-status">total size: {{totalSize / 1000}} kb</p>
+
+
         </div>
     </div>
 </template>
@@ -23,7 +28,7 @@
 <script>
     import {mapState} from "vuex"
 
-    const chunkSize = 100000;
+    const chunkSize = 1000000;
 
     export default {
         name: "upload-file",
@@ -33,6 +38,9 @@
                 file: '',
                 message: '',
                 fileIndex: 0,
+                status: false,
+                totalSize: 0,
+                uploadedSize: 0
             }
         },
         computed: {
@@ -48,6 +56,16 @@
             },
             removeFile(index) {
                 this.files.splice(index, 1);
+                this.countTotalSize();
+            },
+            countTotalSize() {
+                this.totalSize = 0;
+
+                this.files.forEach((file) => {
+                    this.totalSize += file.size;
+                });
+                this.totalSize = this.totalSize
+
             },
             /*genId() {
                 // Math.random should be unique because of its seeding algorithm.
@@ -60,6 +78,7 @@
                     this.files.push(this.$refs['file'].files.item(i));
                     this.files[this.files.length - 1].fakeName = this.genUniqueId(16);
                 }
+                this.countTotalSize();
             },
             sliceUpload(sliceIndex, start ,end) {
                 let fileReader = new FileReader(),
@@ -68,6 +87,8 @@
                 fileReader.readAsArrayBuffer(slice);
                 fileReader.onload = (evt) => {
                     let arrayBuffer = fileReader.result;
+                    this.uploadedSize += chunkSize;
+
                     this.$socket.emit('slice upload', {
                         slice: sliceIndex,
                         chunkSize: chunkSize,
@@ -84,12 +105,13 @@
             {
                 if (!this.files.length) return false;
                 this.file = this.files[this.fileIndex];
+                console.log('type'); console.log(this.file);
+
                 this.sliceUpload(0, 0, chunkSize);
             },
             nextFile() {
                 this.fileIndex++;
                 if (this.files[this.fileIndex]) {
-                    this.file = this.files[this.fileIndex];
                     this.submitFile();
                 } else {
                     this.file = '';
@@ -120,7 +142,12 @@
             this.$socket.on('request slice upload', (data) => {
                 if (!this.file) return;
                 this.sliceUpload(data.currentSlice, data.currentSlice * chunkSize, (data.currentSlice + 1) * chunkSize);
-            })
+            });
+
+            this.$socket.on('upload error', (error) => {
+                console.log(error)
+            });
+
         }
     }
 </script>

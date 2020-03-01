@@ -93,9 +93,23 @@ io.on('connection', function(socket){
     socket.on('chat message', function(msg){
         //console.log(msg);
         let message = new Message({username: msg.username, userId: msg.userId, text: msg.text, channelId: msg.channelId, attachments: msg.attachments, created: Date.now()});
-        message.save();
+        message.save(function (err, message) {
+            Message.findOne(message).populate('attachments').exec(function (err, message) {
+                if (err) console.log(err);
+                io.emit('chat message', message);
+            });
+        });
+        /*Message.findOne(message, function (err, message) {
+            console.log('message');
+            console.log(message);
+        });*/
+        /*Message.find({_id: message._id}).populate('attachments').exec(function (err, message) {
+            if (err) console.log(err);
+            console.log(message);
+        });*/
         //console.log('message: ' + message);
-        io.emit('chat message', message);
+
+
     });
 
     let files = {},
@@ -135,7 +149,8 @@ io.on('connection', function(socket){
                         if (err) return socket.emit('upload error');
                         let userFile = new UserFile({name: data.fakeName, realName: data.name, type: data.type, userId: data.userId, created: Date.now()});
                         userFile.save((err) => {
-                            if(err) return next(err);
+                            //if(err) return next(err);
+                            if(err) console.log(err);
                             socket.emit('end upload', {file: userFile._id});
                         });
                     });

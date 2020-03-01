@@ -2,6 +2,9 @@
     <div>
         <b>{{message.username}}</b>  <span>{{getDate}}</span>
         <p>{{message.text}}</p>
+        <ul v-if="message.attachments">
+            <li v-for="(file,index) in message.attachments">{{file.realName}}</li>
+        </ul>
     </div>
 </template>
 
