@@ -6,6 +6,7 @@ var async = require('async');
 var Channel = require('../models/channel').Channel;
 var Message = require('../models/message').Message;
 let UserFile = require('../models/userFile').UserFile;
+const fs = require('fs');
 
 router.get('/', function (req, res, next) {
     if (req.user) {
@@ -113,6 +114,15 @@ router.post('/upload-file', function (req, res, next) {
 
 });
 
+router.get('/download-file/:id', function (req, res, next) {
+    console.log(req.params.id);
+    UserFile.findById(req.params.id, function (err, file) {
+        if (!file.path) return HttpError(404, 'Not found');
+        let files = fs.createReadStream(file.path);
+        res.writeHead(200, {'Content-disposition': 'attachment; filename=' + file.realName}); //here you can add more headers
+        files.pipe(res)
+    });
+});
 
 
 router.get('/channel-messages', function (req, res, next) {

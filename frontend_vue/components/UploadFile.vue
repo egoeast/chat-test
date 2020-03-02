@@ -22,7 +22,7 @@
 
         </div>
         <div class="progress" v-else>
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 95%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" :style="'width:' + uploadProgress + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{uploadProgress}}%</div>
         </div>
     </div>
 </template>
@@ -36,7 +36,7 @@
         name: "upload-file",
         data() {
             return {
-                loading: true,
+                loading: false,
                 files: [],
                 file: '',
                 message: '',
@@ -51,9 +51,14 @@
                 userId: state => state.user.id,
                 userName: state => state.user.name,
                 activeChannel: state => state.chat.activeChannel,
-            })
+            }),
+            uploadProgress() {
+                console.log(this.uploadedSize / this.totalSize *100);
+                return Math.round(this.uploadedSize / this.totalSize *100);
+            },
         },
         methods: {
+
             handleAddClick() {
                 this.$refs['file'].click()
             },
@@ -82,7 +87,7 @@
                 fileReader.readAsArrayBuffer(slice);
                 fileReader.onload = (evt) => {
                     let arrayBuffer = fileReader.result;
-                    this.uploadedSize += chunkSize;
+                    this.uploadedSize += slice.size;
 
                     this.$socket.emit('slice upload', {
                         slice: sliceIndex,
@@ -100,6 +105,7 @@
             {
                 if (!this.files.length) return false;
                 this.file = this.files[this.fileIndex];
+                this.loading = true;
                 this.sliceUpload(0, 0, chunkSize);
             },
             nextFile() {

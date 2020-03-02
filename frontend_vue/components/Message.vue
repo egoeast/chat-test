@@ -2,17 +2,17 @@
     <div>
         <b>{{message.username}}</b>  <span>{{getDate}}</span>
         <p>{{message.text}}</p>
-        <ul v-if="message.attachments">
-            <li v-for="(file,index) in message.attachments">{{file.realName}}</li>
-        </ul>
+        <file-list :files="message.attachments"></file-list>
     </div>
 </template>
 
 <script>
     import moment from "moment"
+    import FileList from "./FileList.vue";
 
     export default {
         name: "message",
+        components: {FileList},
         props: {
             message: {
                 type: Object,

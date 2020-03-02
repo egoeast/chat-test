@@ -147,7 +147,7 @@ io.on('connection', function(socket){
                     fs.write(fd, fileBuffer, (err) => {
                         delete files[data.fakeName];
                         if (err) return socket.emit('upload error');
-                        let userFile = new UserFile({name: data.fakeName, realName: data.name, type: data.type, userId: data.userId, created: Date.now()});
+                        let userFile = new UserFile({name: data.fakeName, realName: data.name, path: dir + '/' + data.fakeName, type: data.type, userId: data.userId, created: Date.now()});
                         userFile.save((err) => {
                             //if(err) return next(err);
                             if(err) console.log(err);
