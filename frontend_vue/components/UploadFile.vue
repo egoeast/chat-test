@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <h3>File upload</h3>
-        <div class="form-group">
+        <div class="form-group" v-if="!loading">
             <div class="row">
                 <textarea class="form-control" v-model="message"></textarea>
                 <p>{{message}}</p>
@@ -17,10 +17,12 @@
             <input class="form-control d-none" type="file" id="file" ref="file" @change="handleFileUpload" multiple/>
             <button class="btn" @click="submitFile">Submit</button>
 
-            <p class="upload-status">Uploaded: {{uploadedSize / totalSize * 100}} %</p>
+            <!--<p class="upload-status">Uploaded: {{uploadedSize / totalSize * 100}} %</p>-->
             <p class="upload-status">total size: {{totalSize / 1000}} kb</p>
 
-
+        </div>
+        <div class="progress" v-else>
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 95%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
         </div>
     </div>
 </template>
@@ -34,6 +36,7 @@
         name: "upload-file",
         data() {
             return {
+                loading: true,
                 files: [],
                 file: '',
                 message: '',
@@ -64,15 +67,7 @@
                 this.files.forEach((file) => {
                     this.totalSize += file.size;
                 });
-                this.totalSize = this.totalSize
-
             },
-            /*genId() {
-                // Math.random should be unique because of its seeding algorithm.
-                // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-                // after the decimal.
-                return '_' + Math.random().toString(36).substr(2, 9);
-            },*/
             handleFileUpload() {
                 for (let i = 0; i < this.$refs['file'].files.length; i++) {
                     this.files.push(this.$refs['file'].files.item(i));
@@ -105,8 +100,6 @@
             {
                 if (!this.files.length) return false;
                 this.file = this.files[this.fileIndex];
-                console.log('type'); console.log(this.file);
-
                 this.sliceUpload(0, 0, chunkSize);
             },
             nextFile() {
@@ -114,8 +107,6 @@
                 if (this.files[this.fileIndex]) {
                     this.submitFile();
                 } else {
-                    this.file = '';
-                    this.fileIndex = 0;
 
                     let attachmentArray = this.files.map((x) => {
                         return x._id
@@ -129,17 +120,23 @@
                         attachments: attachmentArray
                     });
 
+                    this.files = [];
+                    this.file = '';
+                    this.fileIndex = 0;
                     this.message = "";
                 }
             }
         },
         created() {
             this.$socket.on('end upload', (data) => {
+                console.log('end upload');
+                console.log(data);
                 this.files[this.fileIndex]._id = data.file;
                 this.nextFile();
             });
 
             this.$socket.on('request slice upload', (data) => {
+                console.log('request slice upload');
                 if (!this.file) return;
                 this.sliceUpload(data.currentSlice, data.currentSlice * chunkSize, (data.currentSlice + 1) * chunkSize);
             });
@@ -148,6 +145,11 @@
                 console.log(error)
             });
 
+        },
+        destroyed() {
+            this.$socket.off('request slice upload');
+            this.$socket.off('end upload');
+            this.$socket.off('upload error');
         }
     }
 </script>

@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <vuescroll>
+    <div @mouseover="handleHover(true)" @mouseleave="handleHover(false)">
+        <vuescroll :ops="ops">
             <ul class="channel-list">
                 <li v-for="(channel,index) in channels" :class="channel._id === activeChannel ? 'active' : ''" :key="index"><a href="#" @click.prevent="channelClick(channel._id)">{{channel.name}}</a></li>
             </ul>
@@ -23,7 +23,11 @@
         },
         data() {
             return {
-                //activeChannel: 1
+                ops: {
+                    bar: {
+                        keepShow: false
+                    }
+                }
             }
         },
         computed: {
@@ -39,6 +43,9 @@
                 'setActiveChannel',
                 'getChannelMessages'
             ]),
+            handleHover(val) {
+                this.ops.bar.keepShow = val;
+            },
             channelClick(id) {
                 this.getChannelMessages(id).then(() => {
                     this.setActiveChannel(id);

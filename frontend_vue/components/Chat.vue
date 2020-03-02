@@ -8,9 +8,9 @@
         <div class="col-md-10">
             <div class="jumbotron" style="height: 96%">
                 <h6 class="display-6"></h6>
-                <div v-show="activeChannel">
+                <div v-show="activeChannel" @mouseover="handleHover(true)" @mouseleave="handleHover(false)">
                     <div style="height: 450px">
-                        <vuescroll ref="vs">
+                        <vuescroll ref="vs" :ops="ops">
                             <messages :messages="messages"></messages>
                         </vuescroll>
                     </div>
@@ -59,6 +59,11 @@ export default {
         return {
             message: "",
             isFocus: true,
+            ops: {
+                bar: {
+                    keepShow: false
+                }
+            }
         }
     },
     computed: {
@@ -107,6 +112,9 @@ export default {
             VuedalsBus.$emit('new', {
                 component: UploadFile
             });
+        },
+        handleHover(val) {
+            this.ops.bar.keepShow = val;
         }
     },
     created() {
