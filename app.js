@@ -9,6 +9,7 @@ var HttpError = require('./error/index').HttpError;
 var multer = require('multer');
 
 var indexRouter = require('./routes/index');
+var adminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
@@ -55,6 +56,7 @@ app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/admin', adminRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter);
 //app.use('/logout', logoutRouter);

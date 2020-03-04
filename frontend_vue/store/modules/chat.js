@@ -60,6 +60,21 @@ const actions = {
                 console.log(error);
             });
     },
+    parseUrl({commit}, url) {
+        return axios.get(host + '/api/parse-url/', { params: {url: url}})
+            .then(
+                (response) => {
+                    console.log(response.data);
+                    if (response.data.success) {
+                        return response.data.data
+                    }
+                    return false;
+                }
+            )
+            .catch((error) => {
+                console.log(error);
+            });
+    },
 };
 
 // mutations

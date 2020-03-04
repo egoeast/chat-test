@@ -130,6 +130,9 @@
                     this.file = '';
                     this.fileIndex = 0;
                     this.message = "";
+                    this.$vuedals.close({
+                        $index: 0
+                    })
                 }
             }
         },
