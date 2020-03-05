@@ -7,10 +7,12 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 module.exports = {
     mode: 'development',
     //mode: 'production',
-    entry: './frontend_vue/index.js'
-    ,
+    entry: {
+        app: './frontend_vue/index.js',
+        adminApp: './backend_vue/index.js',
+    },
     output: {
-            filename: 'build.js',
+            filename: '[name].js',
             path: path.resolve(__dirname, 'public/js')
     },
     module: {
