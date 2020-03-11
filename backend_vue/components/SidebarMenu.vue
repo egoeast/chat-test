@@ -1,5 +1,5 @@
 <template>
-    <nav class="bd-links collapse" id="bd-docs-nav" aria-label="Main navigation" style="">
+    <nav class="" id="bd-docs-nav" aria-label="Main navigation" style="">
         <div class="bd-toc-item active">
             <router-link class="bd-toc-link nav-link" to="/admin">Home</router-link>
             <ul class="nav bd-sidenav">

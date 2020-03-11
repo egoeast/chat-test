@@ -120,4 +120,22 @@ router.post('/logout', function (req, res, next) {
    res.send({status: 200, text: 'Logged Out', username: 'Guest'});
 });
 
+//admin
+router.get('/admin/all-users', function (req, res, next) {
+    if (req.user && req.user.role === 'admin') {
+        let users = User.find({}, function (err, users) {
+            res.send({status: 200, users: users});
+        });
+    } else  return HttpError(404, 'Not found');
+});
+
+router.get('/admin/all-files', function (req, res, next) {
+    if (req.user && req.user.role === 'admin') {
+        let files = UserFile.find({}, function (err, files) {
+            res.send({status: 200, files: files});
+        });
+    } else  return HttpError(404, 'Not found');
+});
+
+
 module.exports = router;

@@ -5,6 +5,7 @@ import axios from 'axios'
 const host = '';
 // initial state
 const state = {
+    users: [],
     id: 0,
     name: '',
 };
@@ -32,13 +33,13 @@ const actions = {
                 });
         },1000);
     },*/
-    checkUser({commit}) {
-        return axios.get(host + '/api/')
+    getAllUsers({commit}) {
+        return axios.get(host + '/api/admin/all-users')
             .then(
                 (response) => {
                     let data =  response.data;
-                    if (data.id) {
-                        commit('setUser', {name: response.data.username, id: response.data.id});
+                    if (data.users) {
+                        commit('setUsers', data.users);
                     } else {
                         console.log(response);
                     }
@@ -48,51 +49,14 @@ const actions = {
                 console.log(error);
             });
     },
-    loginUser({commit}, {username, password}) {
-        return axios.post(host + '/api/login', {
-            password: password,
-            username: username
-        })
-            .then(
-                (response) => {
-                    let data = response.data;
-                    //console.log(data);
-                    if (data.status === 200) {
-                        commit('setUser', {name: data.username, id: data.id});
-                        return {status: 'ok', text: data.text};
-                    } else {
-                        return {status: 'fail', text: data.text};
-                    }
-                }
-            )
-            .catch((error) => {
-                console.log(error);
-            });
-    },
-    logoutUser({commit}) {
-        axios.post(host + '/api/logout')
-            .then(
-                (response) => {
-                    let data = response.data;
-                    if (data.status === 200) {
-                        commit('setUser', {name: '', id: 0})
-                    } else {
 
-                    }
-                }
-            )
-            .catch((error) => {
-                console.log(error);
-            });
-    }
 
 };
 
 // mutations
 const mutations = {
-    setUser(state, {name, id}) {
-        state.name = name;
-        state.id = id;
+    setUsers(state, users) {
+        state.users = users;
     },
 
 };

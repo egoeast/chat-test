@@ -20,6 +20,10 @@ var schema = new Shema({
     salt: {
         type: String,
         required: true,
+    },
+    role: {
+        type: String,
+        default: 'user'
     }
 });
 
