@@ -1,39 +1,36 @@
 <template>
-    <div class="container chat">
-        <h1>Chat</h1>
-        <div class="row full-heigt">
-            <div class="col-md-2 jumbotron">
+      <div style="position: relative;
+    z-index: 1;
+    height: 100%;
+    overflow: hidden;
+
+    background: #f9fafb;
+    ">
+        <div class="components-view">
+            <div class="sidebar" :class="openedSidebar ? 'opened-sidebar' : 'closed-sidebar'">
                 <channel-list @loaded="channelLoaded" ></channel-list>
-        </div>
-        <div class="col-md-10">
-            <div class="jumbotron" style="height: 96%">
-                <h6 class="display-6"></h6>
-                <div v-show="activeChannel" @mouseover="handleHover(true)" @mouseleave="handleHover(false)">
-                    <div style="height: 450px">
-                        <vuescroll ref="vs" :ops="ops">
-                            <messages :messages="messages"></messages>
-                        </vuescroll>
-                    </div>
-                    <!--{emojiModal}-->
-                    <div>
-                    <textarea
-                            placeholder="Type message..."
-                            v-model="message"
-                            class="form-control"
-                            @keydown.enter.exact.prevent
-                            @keyup.enter.exact="sendMessage"
-                            @keyup.shift.enter.prevent="newLine"
-                            rows="4"
-                    ></textarea>
-                    </div>
-                    <div>
-                        <button class="btn btn-danger" @click="openFilePopup">Add file</button>
-                    </div>
-                </div>
             </div>
+            <div style="width: 100%" v-show="activeChannel" @mouseover="handleHover(true)" @mouseleave="handleHover(false)">
+                <vuescroll ref="vs" :ops="ops">
+                    <messages :messages="messages"></messages>
+                </vuescroll>
+            </div>
+
+        </div>
+        <div style="width: 100%; height: 20%; padding: 10px">
+              <textarea
+                    placeholder="Type message..."
+                    v-model="message"
+                    class="form-control"
+                    @keydown.enter.exact.prevent
+                    @keyup.enter.exact="sendMessage"
+                    @keyup.shift.enter.prevent="newLine"
+                    rows="4"
+            ></textarea>
+            <button class="btn btn-danger" @click="openFilePopup">Add file</button>
         </div>
     </div>
-    </div>
+
 </template>
 
 <script>
@@ -71,7 +68,8 @@ export default {
             user: state => state.user.name,
             userId: state => state.user.id,
             activeChannel: state => state.chat.activeChannel,
-            messages: state => state.chat.messages
+            messages: state => state.chat.messages,
+            openedSidebar: state => state.openedSidebar
         })
     },
     methods: {

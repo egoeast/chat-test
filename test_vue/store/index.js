@@ -9,15 +9,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        openedSidebar: false
+
     },
     actions: {
 
     },
     mutations: {
-        toggleSidebar(state) {
-            state.openedSidebar = !state.openedSidebar
-        }
+
     },
     modules: {
         user,

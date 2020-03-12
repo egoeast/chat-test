@@ -9,6 +9,7 @@ module.exports = {
     //mode: 'production',
     entry: {
         app: './frontend_vue/index.js',
+        test: './test_vue/index.js',
         adminApp: './backend_vue/index.js',
     },
     output: {

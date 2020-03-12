@@ -104,10 +104,13 @@ define("./service-worker.js",['./workbox-bf702a35'], function (workbox) { 'use s
 
   workbox.precacheAndRoute([{
     "url": "adminApp.js",
-    "revision": "defb2213757eef4180ef6a7f8d43612e"
+    "revision": "f8ef914bf0333b2e71af1fa7c5b49fee"
   }, {
     "url": "app.js",
-    "revision": "895f2dff0e41503ee1131e5a99506232"
+    "revision": "df24023e3bd387c72e9463443e53e197"
+  }, {
+    "url": "test.js",
+    "revision": "be27121878cfafea87d388f731debb57"
   }], {});
 
 });
