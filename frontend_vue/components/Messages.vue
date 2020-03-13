@@ -1,5 +1,5 @@
 <template>
-    <div class="message-container full-heigt">
+    <div class="message-container">
         <ul class="message-list">
             <li class="article-list__li" v-for="(message,index) in messages">
                 <message :message="message"></message>
@@ -34,6 +34,10 @@ export default {
 </script>
 
 <style>
+    .message-container {
+        padding: 0px 20px 0px 20px;
+    }
+
     .message-list {
         list-style: none;
     }

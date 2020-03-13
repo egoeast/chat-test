@@ -16,6 +16,7 @@ export default new Vuex.Store({
     },
     mutations: {
         toggleSidebar(state) {
+            console.log('toggle');
             state.openedSidebar = !state.openedSidebar
         }
     },

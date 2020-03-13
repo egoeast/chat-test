@@ -18,7 +18,7 @@
         <div v-show="!imageAttachmentHidden">
             <img class="attachment-image" :src="attachment.ogImage.url">
         </div>
-        <p>{{attachment.ogImage.url}}</p>
+        <!--<p>{{attachment.ogImage.url}}</p>-->
 
     </div>
 
@@ -49,14 +49,26 @@
     }
 </script>
 
-<style scoped>
+<style lang="less">
     .attachment-body {
         border-left: 3px solid #0000008f;
         padding-left: 14px;
         margin-bottom: 5px;
     }
     .attachment-image {
-        width: 50%;
+        height: 300px;
+        border: 1px solid #c0c0c0;
+        border-radius: 5px;
+
+        @media (max-width: 768px) {
+            max-width: 600px;
+        }
+
+        @media (max-width: 450px) {
+            max-width: 400px;
+        }
     }
+
+
 
 </style>

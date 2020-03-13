@@ -1,8 +1,11 @@
 <template>
-    <div @mouseover="handleHover(true)" @mouseleave="handleHover(false)">
+    <div @mouseover="handleHover(true)" @mouseleave="handleHover(false)" style="overflow: hidden">
         <vuescroll :ops="ops">
             <ul class="channel-list">
-                <li v-for="(channel,index) in channels" :class="channel._id === activeChannel ? 'active' : ''" :key="index"><a href="#" @click.prevent="channelClick(channel._id)">{{channel.name}}</a></li>
+                <li v-for="(channel,index) in channels" :class="channel._id === activeChannel ? 'active' : ''"
+                    :key="index" @click.prevent="channelClick(channel._id)"><a href="#"
+                                                                               @click.prevent="channelClick(channel._id)">{{channel.name}}</a>
+                </li>
             </ul>
         </vuescroll>
         <button class="btn btn-primary" @click="addChannel">Add chanel</button>
@@ -34,7 +37,6 @@
             ...mapState({
                 channels: state => state.chat.channels,
                 activeChannel: state => state.chat.activeChannel,
-                //userId: state => state.user.id
             })
         },
         methods: {
@@ -67,27 +69,35 @@
     }
 </script>
 
-<style scoped>
+<style lang="less">
+    @import "../assets/constants";
+
     .channel-list {
         list-style: none;
         padding: 0;
-        height: 450px;
+
+        li {
+            cursor: pointer;
+            padding: 5px 10px 5px 15px;
+            border-radius: 3px;
+        }
+
+        li.active {
+            background: @brand-color-2;
+        }
+
+        li.active:hover {
+            background: @brand-color-2;
+        }
+
+        li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        li:hover {
+            background: saturate(@brand-color-1, 20%);
+        }
     }
 
-    .channel-list li {
-        padding: 5px;
-        border-radius: 5px;
-    }
-
-    .channel-list. a {
-        text-decoration: none;
-    }
-
-    .channel-list. a:hover {
-        text-decoration: none;
-    }
-
-    .channel-list .active {
-        background: #cbddef;
-    }
 </style>

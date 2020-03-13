@@ -1,21 +1,16 @@
 <template>
-      <div style="position: relative;
-    z-index: 1;
-    height: 100%;
-    overflow: hidden;
-
-    background: #f9fafb;
-    ">
+      <div class="chat-container">
         <div class="components-view">
             <div class="sidebar" :class="openedSidebar ? 'opened-sidebar' : 'closed-sidebar'">
                 <channel-list @loaded="channelLoaded" ></channel-list>
             </div>
-            <div style="width: 100%" v-show="activeChannel" @mouseover="handleHover(true)" @mouseleave="handleHover(false)">
+
+            <div v-show="activeChannel" @mouseover="handleHover(true)" @mouseleave="handleHover(false)">
                 <vuescroll ref="vs" :ops="ops">
                     <messages :messages="messages"></messages>
                 </vuescroll>
             </div>
-
+            <div class="sidebar-overlay" v-show="openedSidebar" @click="toggleSidebar"></div>
         </div>
         <div style="width: 100%; height: 20%; padding: 10px">
               <textarea
@@ -29,6 +24,7 @@
             ></textarea>
             <button class="btn btn-danger" @click="openFilePopup">Add file</button>
         </div>
+
     </div>
 
 </template>
@@ -40,7 +36,7 @@ import ChannelList from "./ChannelList.vue";
 import vuescroll from "vuescroll"
 import {Bus as VuedalsBus} from 'vuedals';
 
-import {mapState, mapActions} from 'vuex'
+import {mapState, mapActions, mapMutations} from 'vuex'
 import UploadFile from "./UploadFile.vue";
 
 export default {
@@ -76,6 +72,7 @@ export default {
         ...mapActions('chat', [
             'addMessage'
         ]),
+        ...mapMutations(['toggleSidebar']),
         sendMessage() {
 
             if (this.message.replace(/\r?\n/g, "") !== "") {
@@ -160,5 +157,9 @@ export default {
 
     .chat {
         height: 650px;
+    }
+
+    .sidebar {
+        overflow: hidden;
     }
 </style>
