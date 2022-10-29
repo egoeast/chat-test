@@ -39,7 +39,7 @@
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.5.0",
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
     "vuedals": "^1.8.0",
